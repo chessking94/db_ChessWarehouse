@@ -103,7 +103,6 @@
     <Build Include="dim\Tables\Sources.sql" />
     <Build Include="stage\Tables\Moves.sql" />
     <Build Include="dim\Tables\TimeControls.sql" />
-    <Build Include="dbo\Tables\IndexUsage20221214.sql" />
     <Build Include="dbo\Tables\Settings.sql" />
     <Build Include="dim\Tables\Events.sql" />
     <Build Include="dim\Tables\CPLossGroups.sql" />
@@ -189,5 +188,12 @@
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.SeedData.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\160\SqlSchemas\master.dacpac">
+      <HintPath>$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\160\SqlSchemas\master.dacpac</HintPath>
+      <SuppressMissingDependenciesErrors>True</SuppressMissingDependenciesErrors>
+      <DatabaseVariableLiteralValue>master</DatabaseVariableLiteralValue>
+    </ArtifactReference>
   </ItemGroup>
 </Project>
