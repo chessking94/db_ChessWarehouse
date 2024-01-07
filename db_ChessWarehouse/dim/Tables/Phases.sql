@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dim].[Phases] (
+    [PhaseID] TINYINT      IDENTITY (1, 1) NOT NULL,
+    [Phase]   VARCHAR (10) NOT NULL,
+    CONSTRAINT [PK_Phases] PRIMARY KEY CLUSTERED ([PhaseID] ASC),
+    CONSTRAINT [UC_Phases_Phase] UNIQUE NONCLUSTERED ([Phase] ASC)
+);
+

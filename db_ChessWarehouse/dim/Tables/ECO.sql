@@ -1,0 +1,9 @@
+﻿CREATE TABLE [dim].[ECO] (
+    [ECOID]          SMALLINT     IDENTITY (1, 1) NOT NULL,
+    [ECO_Code]       CHAR (3)     NOT NULL,
+    [Opening_Name]   VARCHAR (25) NULL,
+    [Variation_Name] VARCHAR (25) NULL,
+    CONSTRAINT [PK_ECO] PRIMARY KEY CLUSTERED ([ECOID] ASC),
+    CONSTRAINT [UC_ECO_ECOCode] UNIQUE NONCLUSTERED ([ECO_Code] ASC)
+);
+

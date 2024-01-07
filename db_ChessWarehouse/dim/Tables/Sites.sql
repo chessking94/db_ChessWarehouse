@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dim].[Sites] (
+    [SiteID]   TINYINT      IDENTITY (1, 1) NOT NULL,
+    [SiteName] VARCHAR (26) NOT NULL,
+    CONSTRAINT [PK_Sites] PRIMARY KEY CLUSTERED ([SiteID] ASC),
+    CONSTRAINT [UC_Sites_SiteName] UNIQUE NONCLUSTERED ([SiteName] ASC)
+);
+

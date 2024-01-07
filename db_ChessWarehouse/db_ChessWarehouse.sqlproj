@@ -13,7 +13,7 @@
     </RootPath>
     <RootNamespace>db_ChessWarehouse</RootNamespace>
     <AssemblyName>db_ChessWarehouse</AssemblyName>
-    <ModelCollation>1033, CI</ModelCollation>
+    <ModelCollation>1033,CI</ModelCollation>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <DeployToDatabase>True</DeployToDatabase>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -22,6 +22,8 @@
     <SqlServerVerification>False</SqlServerVerification>
     <IncludeCompositeObjects>True</IncludeCompositeObjects>
     <TargetDatabaseSet>True</TargetDatabaseSet>
+    <DefaultCollation>SQL_Latin1_General_CP1_CI_AS</DefaultCollation>
+    <DefaultFilegroup>PRIMARY</DefaultFilegroup>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -56,5 +58,136 @@
   <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
   <ItemGroup>
     <Folder Include="Properties" />
+    <Folder Include="dim\" />
+    <Folder Include="dim\Tables\" />
+    <Folder Include="dbo\" />
+    <Folder Include="dbo\Tables\" />
+    <Folder Include="fact\" />
+    <Folder Include="fact\Tables\" />
+    <Folder Include="lake\" />
+    <Folder Include="lake\Tables\" />
+    <Folder Include="stat\" />
+    <Folder Include="stat\Tables\" />
+    <Folder Include="stage\" />
+    <Folder Include="stage\Tables\" />
+    <Folder Include="doc\" />
+    <Folder Include="doc\Tables\" />
+    <Folder Include="dbo\Views\" />
+    <Folder Include="fact\Views\" />
+    <Folder Include="lake\Views\" />
+    <Folder Include="Security\" />
+    <Folder Include="dbo\Functions\" />
+    <Folder Include="dbo\Stored Procedures\" />
+    <Folder Include="Database Triggers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Build Include="dim\Tables\Colors.sql" />
+    <Build Include="dbo\Tables\AuditLog.sql" />
+    <Build Include="fact\Tables\Evaluation.sql" />
+    <Build Include="dim\Tables\Sites.sql" />
+    <Build Include="fact\Tables\Event.sql" />
+    <Build Include="fact\Tables\EventScores.sql" />
+    <Build Include="lake\Tables\Games.sql" />
+    <Build Include="fact\Tables\GameScores.sql" />
+    <Build Include="stat\Tables\PerfRatingCrossRef.sql" />
+    <Build Include="dbo\Tables\OngoingLichessCorr.sql" />
+    <Build Include="fact\Tables\Game.sql" />
+    <Build Include="fact\Tables\EvaluationScores.sql" />
+    <Build Include="dbo\Tables\UsernameXRef.sql" />
+    <Build Include="stat\Tables\EvalDistributionParameters.sql" />
+    <Build Include="dim\Tables\EvaluationGroups.sql" />
+    <Build Include="stage\Tables\Games.sql" />
+    <Build Include="dbo\Tables\FileTypes.sql" />
+    <Build Include="fact\Tables\EvaluationSplits.sql" />
+    <Build Include="dim\Tables\Ratings.sql" />
+    <Build Include="dim\Tables\Sources.sql" />
+    <Build Include="stage\Tables\Moves.sql" />
+    <Build Include="dim\Tables\TimeControls.sql" />
+    <Build Include="dbo\Tables\IndexUsage20221214.sql" />
+    <Build Include="dbo\Tables\Settings.sql" />
+    <Build Include="dim\Tables\Events.sql" />
+    <Build Include="dim\Tables\CPLossGroups.sql" />
+    <Build Include="doc\Tables\Records.sql" />
+    <Build Include="dim\Tables\Players.sql" />
+    <Build Include="doc\Tables\RecordLayouts.sql" />
+    <Build Include="stage\Tables\BulkInsertGameData.sql" />
+    <Build Include="stage\Tables\Events.sql" />
+    <Build Include="stage\Tables\Players.sql" />
+    <Build Include="stage\Tables\TimeControlDetail.sql" />
+    <Build Include="dim\Tables\ECO.sql" />
+    <Build Include="dim\Tables\Traces.sql" />
+    <Build Include="dbo\Tables\FileHistory.sql" />
+    <Build Include="stat\Tables\StatisticsSummary.sql" />
+    <Build Include="stat\Tables\DistributionTypes.sql" />
+    <Build Include="dim\Tables\Engines.sql" />
+    <Build Include="dim\Tables\Aggregations.sql" />
+    <Build Include="dim\Tables\Phases.sql" />
+    <Build Include="dim\Tables\Measurements.sql" />
+    <Build Include="stat\Tables\EvalDistributions.sql" />
+    <Build Include="stat\Tables\CPLossDistributions.sql" />
+    <Build Include="dim\Tables\TimeControlDetail.sql" />
+    <Build Include="stat\Tables\CPLossDistributionParameters.sql" />
+    <Build Include="lake\Tables\Moves.sql" />
+    <Build Include="dim\Tables\Scores.sql" />
+    <Build Include="dbo\Tables\DownloadLog.sql" />
+    <Build Include="stat\Tables\MoveScores.sql" />
+    <Build Include="stat\Tables\Covariances.sql" />
+    <Build Include="dbo\Views\vwIndexUsage.sql" />
+    <Build Include="fact\Views\vwEventScoresPivot.sql" />
+    <Build Include="fact\Views\vwGameScoresPivot.sql" />
+    <Build Include="fact\Views\vwEvaluationScoresPivot.sql" />
+    <Build Include="dbo\Views\vwIndexReview.sql" />
+    <Build Include="lake\Views\vwEvaluationSummary.sql" />
+    <Build Include="lake\Views\vwEventBreakdown.sql" />
+    <Build Include="dbo\Views\vwConstraints.sql" />
+    <Build Include="dbo\Functions\GetPerfRating.sql" />
+    <Build Include="dbo\Functions\GetUSCFNorm.sql" />
+    <Build Include="dbo\Functions\GetSettingValue.sql" />
+    <Build Include="dbo\Functions\GetTimeControlID.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateMoveScores.sql" />
+    <Build Include="dbo\Stored Procedures\InsertGameFacts.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateMoveScores_ScoreID_0.sql" />
+    <Build Include="dbo\Stored Procedures\InsertEventFacts.sql" />
+    <Build Include="dbo\Stored Procedures\CreateScoreViews.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateZScores.sql" />
+    <Build Include="dbo\Stored Procedures\InsertEvaluationFacts.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateGameFacts.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateEventFacts.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateEvaluationFacts.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateMoveScoresAll.sql" />
+    <Build Include="dbo\Stored Procedures\InsertEvaluationSplits.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateTimeControlIDsAll.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateGameData.sql" />
+    <Build Include="dbo\Stored Procedures\StageGames.sql" />
+    <Build Include="dbo\Stored Procedures\FormatGameData.sql" />
+    <Build Include="dbo\Stored Procedures\StageMoves.sql" />
+    <Build Include="dbo\Stored Procedures\FormatMoveData.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateMoveScores_ScoreID_3.sql" />
+    <Build Include="dbo\Stored Procedures\InsertNewEvents.sql" />
+    <Build Include="dbo\Stored Procedures\InsertNewPlayers.sql" />
+    <Build Include="dbo\Stored Procedures\InsertNewTimeControls.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateStagedGameKeys.sql" />
+    <Build Include="dbo\Stored Procedures\DeleteStagedGameData.sql" />
+    <Build Include="dbo\Stored Procedures\InsertNewGames.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateStagedMoveKeys.sql" />
+    <Build Include="dbo\Stored Procedures\InsertNewMoves.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateMoveTracesAll.sql" />
+    <Build Include="dbo\Stored Procedures\LoadGameData.sql" />
+    <Build Include="dbo\Stored Procedures\InsertGameFactsNew.sql" />
+    <Build Include="dbo\Stored Procedures\PurgeSchemas.sql" />
+    <Build Include="dbo\Stored Procedures\DupCheckStagedGames.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateMoveScores_ScoreID_1.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateMoveScores_ScoreID_2.sql" />
+    <Build Include="dbo\Stored Procedures\InsertMissingMoveScores.sql" />
+    <Build Include="Database Triggers\backup_objects.sql" />
+    <Build Include="Security\dim.sql" />
+    <Build Include="Security\doc.sql" />
+    <Build Include="Security\fact.sql" />
+    <Build Include="Security\lake.sql" />
+    <Build Include="Security\stage.sql" />
+    <Build Include="Security\stat.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment.SeedData.sql" />
   </ItemGroup>
 </Project>
