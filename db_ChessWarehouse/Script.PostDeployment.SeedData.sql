@@ -69,6 +69,10 @@ INSERT INTO dbo.Settings (ID, Name, Value, Description)
 SELECT 9, 'Default Score', '1', 'The default ScoreID value for fact tables'
 WHERE NOT EXISTS (SELECT ID FROM dbo.Settings WHERE ID = 9)
 
+INSERT INTO dbo.Settings (ID, Name, Value, Description)
+SELECT 10, 'FileProcessing Directory', NULL, 'File processing root directory'
+WHERE NOT EXISTS (SELECT ID FROM dbo.Settings WHERE ID = 9)
+
 SET IDENTITY_INSERT dbo.Settings OFF
 
 

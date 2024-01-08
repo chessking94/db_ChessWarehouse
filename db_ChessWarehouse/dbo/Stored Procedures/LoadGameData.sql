@@ -24,13 +24,14 @@ CREATE TABLE #directory (content varchar(1000))
 IF (OBJECT_ID('tempdb..#pendingfiles') IS NOT NULL) DROP TABLE #pendingfiles
 CREATE TABLE #pendingfiles (filename varchar(200))
 
-SET @dir = dbo.GetSettingValue('Import Directory')
+SET @dir = dbo.GetSettingValue('FileProcessing Directory')
 IF RIGHT(@dir, 1) <> '\' SET @dir = @dir + '\'
+SET @dir = @dir + @@SERVERNAME + '\Import\GameData\'
 
 SET @cmd = 'DIR "' + @dir + '"'
 
 INSERT INTO #directory
-EXEC master..xp_cmdshell @cmd
+EXEC master.dbo.xp_cmdshell @cmd
 
 SELECT @ext = FileExtension FROM FileTypes WHERE FileTypeID = @filetypeid
 INSERT INTO #pendingfiles
@@ -119,7 +120,7 @@ BEGIN
 	IF @err_msg = 0
 	BEGIN
 		SET @cmd = 'MOVE "' + @dir + + @filename + '" "' + @dir + 'Archive\' + @filename + '"'
-		EXEC master..xp_cmdshell @cmd
+		EXEC master.dbo.xp_cmdshell @cmd
 	END
 
 	DELETE FROM #pendingfiles WHERE filename = @filename
