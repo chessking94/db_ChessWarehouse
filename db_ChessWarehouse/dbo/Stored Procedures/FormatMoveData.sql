@@ -8,11 +8,6 @@ FROM stage.Moves m
 LEFT JOIN dim.Colors c ON m.Color = c.Color
 
 UPDATE m
-SET m.EngineName = e.EngineID, m.Errors = (CASE WHEN e.EngineID IS NULL THEN 'EngineName' ELSE NULL END)
-FROM stage.Moves m
-LEFT JOIN dim.Engines e ON m.EngineName = e.EngineName
-
-UPDATE m
 SET m.PhaseID = p.PhaseID, m.Errors = (CASE WHEN p.PhaseID IS NULL THEN 'PhaseID' ELSE NULL END)
 FROM stage.Moves m
 LEFT JOIN dim.Phases p ON m.PhaseID = p.PhaseID

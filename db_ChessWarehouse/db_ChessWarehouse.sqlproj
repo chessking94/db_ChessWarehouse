@@ -185,6 +185,7 @@
     <Build Include="Security\lake.sql" />
     <Build Include="Security\stage.sql" />
     <Build Include="Security\stat.sql" />
+    <Build Include="dbo\Stored Procedures\InsertNewEngines.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.SeedData.sql" />

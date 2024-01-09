@@ -90,6 +90,7 @@ BEGIN
 			EXEC dbo.InsertNewEvents
 			EXEC dbo.InsertNewPlayers
 			EXEC dbo.InsertNewTimeControls
+			EXEC dbo.InsertNewEngines
 
 			--add new key values to staged game data
 			EXEC dbo.UpdateStagedGameKeys
