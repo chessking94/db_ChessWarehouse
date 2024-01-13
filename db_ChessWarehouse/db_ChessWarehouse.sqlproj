@@ -186,6 +186,14 @@
     <Build Include="Security\stage.sql" />
     <Build Include="Security\stat.sql" />
     <Build Include="dbo\Stored Procedures\InsertNewEngines.sql" />
+    <Build Include="lake\Tables\LichessEvaluations.sql" />
+    <Build Include="stage\Tables\LichessEvaluations.sql" />
+    <Build Include="stage\Tables\BulkInsertLichessEvaluations.sql" />
+    <Build Include="dbo\Stored Procedures\LoadLichessEvaluations.sql" />
+    <Build Include="dbo\Stored Procedures\StageLichessEvals.sql" />
+    <Build Include="dbo\Stored Procedures\FormatLichessEvals.sql" />
+    <Build Include="dbo\Stored Procedures\DeleteStagedLichessEvaluations.sql" />
+    <Build Include="dbo\Stored Procedures\InsertLichessEvaluations.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.SeedData.sql" />

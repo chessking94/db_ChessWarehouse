@@ -27,6 +27,10 @@ INSERT INTO dbo.FileTypes (FileTypeID, FileType, FileExtension)
 SELECT '1', 'Python Analysis', 'game'
 WHERE NOT EXISTS (SELECT FileTypeID FROM dbo.FileTypes WHERE FileTypeID = '1')
 
+INSERT INTO dbo.FileTypes (FileTypeID, FileType, FileExtension)
+SELECT '2', 'Lichess Evaluations', 'lieval'
+WHERE NOT EXISTS (SELECT FileTypeID FROM dbo.FileTypes WHERE FileTypeID = '2')
+
 SET IDENTITY_INSERT dbo.FileTypes OFF
 
 
