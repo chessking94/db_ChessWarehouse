@@ -6,5 +6,5 @@
     [Depth] VARCHAR(10) NULL, 
     [Evaluation] VARCHAR(10) NULL, 
     [Mate] VARCHAR(10) NULL, 
-    [Line] VARCHAR(50) NULL
+    [Line] VARCHAR(60) NULL
 )

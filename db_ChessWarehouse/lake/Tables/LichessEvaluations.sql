@@ -7,7 +7,7 @@
     [Depth] SMALLINT NULL, 
     [Evaluation] INT NULL, 
     [Mate] SMALLINT NULL, 
-    [Line] VARCHAR(50) NULL,
+    [Line] VARCHAR(60) NULL,
     [FileID] INT NOT NULL,
     CONSTRAINT [PK_LichessEvaluations] PRIMARY KEY CLUSTERED ([EvaluationID] ASC),
     CONSTRAINT [FK_LEvals_ColorID] FOREIGN KEY ([ColorID]) REFERENCES [dim].[Colors] ([ColorID]),
