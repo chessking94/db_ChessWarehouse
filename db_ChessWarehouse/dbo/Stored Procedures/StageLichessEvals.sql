@@ -2,7 +2,6 @@
 
 AS
 
---TODO: Chunk this so it isn't done in one fell swoop?
 TRUNCATE TABLE stage.LichessEvaluations
 
 INSERT INTO stage.LichessEvaluations (
