@@ -55,7 +55,7 @@ BEGIN
 	SET @dte = GETDATE()
 
 	TRUNCATE TABLE stage.BulkInsertLichessEvaluations
-	SET @cmd = 'BULK INSERT stage.BulkInsertLichessEvaluations FROM ''' + @dir + @filename + ''' WITH (FIELDTERMINATOR = ''\t'', ROWTERMINATOR = ''\n'')'
+	SET @cmd = 'BULK INSERT stage.BulkInsertLichessEvaluations FROM ''' + @dir + @filename + ''' WITH (BATCHSIZE = 5000, FIELDTERMINATOR = ''\t'', ROWTERMINATOR = ''\n'', TABLOCK)'
 	EXECUTE (@cmd)
 
 	SELECT @rec_ct = COUNT(FEN) FROM stage.BulkInsertLichessEvaluations
