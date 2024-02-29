@@ -3,36 +3,37 @@
 AS
 
 SELECT
-OBJECT_NAME(IX.OBJECT_ID) AS Table_Name,
-IX.name AS Index_Name,
-IX.type_desc AS Index_Type,
-SUM(PS.[used_page_count]) * 8 AS IndexSizeKB,
-IXUS.user_seeks AS NumOfSeeks,
-IXUS.user_scans AS NumOfScans,
-IXUS.user_lookups AS NumOfLookups,
-IXUS.user_updates AS NumOfUpdates,
-IXUS.last_user_seek AS LastSeek,
-IXUS.last_user_scan AS LastScan,
-IXUS.last_user_lookup AS LastLookup,
-IXUS.last_user_update AS LastUpdate
+OBJECT_NAME(ix.object_id) AS Table_Name,
+ix.name AS Index_Name,
+ix.type_desc AS Index_Type,
+SUM(ps.[used_page_count]) * 8 AS IndexSizeKB,
+ixus.user_seeks AS NumOfSeeks,
+ixus.user_scans AS NumOfScans,
+ixus.user_lookups AS NumOfLookups,
+ixus.user_updates AS NumOfUpdates,
+ixus.last_user_seek AS LastSeek,
+ixus.last_user_scan AS LastScan,
+ixus.last_user_lookup AS LastLookup,
+ixus.last_user_update AS LastUpdate
 
-FROM sys.indexes IX
-JOIN sys.dm_db_index_usage_stats IXUS ON
-	IXUS.index_id = IX.index_id AND IXUS.OBJECT_ID = IX.OBJECT_ID
-JOIN sys.dm_db_partition_stats PS ON
-	PS.OBJECT_ID = IX.OBJECT_ID
+FROM sys.indexes ix
+JOIN sys.dm_db_index_usage_stats ixus ON
+	ix.index_id = ixus.index_id 
+	AND ixus.object_id = ix.object_id
+JOIN sys.dm_db_partition_stats ps ON
+	ps.object_id = ix.object_id
 
-WHERE OBJECTPROPERTY(IX.OBJECT_ID, 'IsUserTable') = 1
+WHERE OBJECTPROPERTY(ix.object_id, 'IsUserTable') = 1
 
 GROUP BY
-OBJECT_NAME(IX.OBJECT_ID),
-IX.name,
-IX.type_desc,
-IXUS.user_seeks,
-IXUS.user_scans,
-IXUS.user_lookups,
-IXUS.user_updates,
-IXUS.last_user_seek,
-IXUS.last_user_scan,
-IXUS.last_user_lookup,
-IXUS.last_user_update
+OBJECT_NAME(ix.object_id),
+ix.name,
+ix.type_desc,
+ixus.user_seeks,
+ixus.user_scans,
+ixus.user_lookups,
+ixus.user_updates,
+ixus.last_user_seek,
+ixus.last_user_scan,
+ixus.last_user_lookup,
+ixus.last_user_update

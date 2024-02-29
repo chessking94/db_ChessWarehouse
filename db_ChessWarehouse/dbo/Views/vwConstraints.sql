@@ -3,7 +3,7 @@
 AS
 
 SELECT
-SCHEMA_NAME(t.SCHEMA_ID) + '.' + t.[name] AS table_view, 
+SCHEMA_NAME(t.schema_id) + '.' + t.[name] AS table_view, 
 CASE
 	WHEN t.[type] = 'U' THEN 'Table'
 	WHEN t.[type] = 'V' THEN 'View'
@@ -37,11 +37,11 @@ AND t.is_ms_shipped <> 1
 UNION ALL
 
 SELECT
-SCHEMA_NAME(fk_tab.SCHEMA_ID) + '.' + fk_tab.name AS foreign_table,
+SCHEMA_NAME(fk_tab.schema_id) + '.' + fk_tab.name AS foreign_table,
 'Table',
 'Foreign key',
 fk.name AS fk_constraint_name,
-SCHEMA_NAME(pk_tab.SCHEMA_ID) + '.' + pk_tab.name
+SCHEMA_NAME(pk_tab.schema_id) + '.' + pk_tab.name
 FROM sys.foreign_keys fk
 JOIN sys.tables fk_tab ON fk_tab.object_id = fk.parent_object_id
 JOIN sys.tables pk_tab ON pk_tab.object_id = fk.referenced_object_id
@@ -49,7 +49,7 @@ JOIN sys.foreign_key_columns fk_cols ON fk_cols.constraint_object_id = fk.object
 
 UNION ALL
 
-SELECT SCHEMA_NAME(t.SCHEMA_ID) + '.' + t.[name],
+SELECT SCHEMA_NAME(t.schema_id) + '.' + t.[name],
 'Table',
 'Check constraint',
 con.[name] AS constraint_name,
@@ -62,7 +62,7 @@ LEFT JOIN sys.all_columns col on
 
 UNION ALL
 
-SELECT SCHEMA_NAME(t.SCHEMA_ID) + '.' + t.[name],
+SELECT SCHEMA_NAME(t.schema_id) + '.' + t.[name],
 'Table',
 'Default constraint',
 con.[name],

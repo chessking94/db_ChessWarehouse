@@ -22,12 +22,12 @@ DECLARE @data XML
 SET @data = EVENTDATA()
  
 INSERT INTO AuditLog (
-	databasename,
-	eventtype, 
-    objectname,
-	objecttype,
-	sqlcommand,
-	loginname
+	DatabaseName,
+	EventType, 
+    ObjectName,
+	ObjectType,
+	SqlCommand,
+	LoginName
 )
 VALUES (
 	@data.value('(/EVENT_INSTANCE/DatabaseName)[1]', 'varchar(256)'),
