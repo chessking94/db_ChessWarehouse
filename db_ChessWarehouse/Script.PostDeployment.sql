@@ -26,6 +26,7 @@ DECLARE @xsql nvarchar(500)
 DECLARE @login_ct tinyint
 DECLARE @user_ct tinyint
 DECLARE @role_ct tinyint
+DECLARE @exec_perm tinyint
 
 --get username for environment and verify it exists on the server
 IF @server LIKE '%dev%'
@@ -94,6 +95,26 @@ BEGIN
 	SET @xsql = 'ALTER ROLE [db_datareader] ADD MEMBER [' + @login_name + ']'
 	EXEC sp_executesql @xsql
 	PRINT 'Added db_datareader role to user'
+END
+
+--the pythonuser_* login should also have execute permissions on ChessWarehouse
+SET @xsql = '
+SELECT
+@execpermOUT = COUNT(dp.name)
+
+FROM sys.database_principals dp
+JOIN sys.database_permissions perm ON dp.principal_id = perm.grantee_principal_id
+
+WHERE perm.permission_name = ''EXECUTE''
+AND dp.name = ''' + @login_name + ''''
+
+EXEC sp_executesql @xsql, N'@execpermOUT tinyint OUTPUT', @execpermOUT=@exec_perm OUTPUT
+IF @exec_perm = 0
+BEGIN
+	--permission does not exist, add it
+	SET @xsql = 'GRANT EXECUTE TO [' + @login_name + ']'
+	EXEC sp_executesql @xsql
+	PRINT 'Added EXECUTE permission on database to user'
 END
 
 /* Insert seed data */
