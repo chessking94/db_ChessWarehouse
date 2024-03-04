@@ -2583,24 +2583,24 @@ SET IDENTITY_INSERT dim.Sites OFF
 ----Table: Sources
 SET IDENTITY_INSERT dim.Sources ON
 
-INSERT INTO dim.Sources (SourceID, SourceName)
-SELECT '1', 'Personal'
+INSERT INTO dim.Sources (SourceID, SourceName, PersonalFlag)
+SELECT '1', 'Personal', 1
 WHERE NOT EXISTS (SELECT SourceID FROM dim.Sources WHERE SourceID = '1')
 
-INSERT INTO dim.Sources (SourceID, SourceName)
-SELECT '2', 'PersonalOnline'
+INSERT INTO dim.Sources (SourceID, SourceName, PersonalFlag)
+SELECT '2', 'PersonalOnline', 1
 WHERE NOT EXISTS (SELECT SourceID FROM dim.Sources WHERE SourceID = '2')
 
-INSERT INTO dim.Sources (SourceID, SourceName)
-SELECT '3', 'Control'
+INSERT INTO dim.Sources (SourceID, SourceName, PersonalFlag)
+SELECT '3', 'Control', 0
 WHERE NOT EXISTS (SELECT SourceID FROM dim.Sources WHERE SourceID = '3')
 
-INSERT INTO dim.Sources (SourceID, SourceName)
-SELECT '4', 'Lichess'
+INSERT INTO dim.Sources (SourceID, SourceName, PersonalFlag)
+SELECT '4', 'Lichess', 0
 WHERE NOT EXISTS (SELECT SourceID FROM dim.Sources WHERE SourceID = '4')
 
-INSERT INTO dim.Sources (SourceID, SourceName)
-SELECT '5', 'Cheaters'
+INSERT INTO dim.Sources (SourceID, SourceName, PersonalFlag)
+SELECT '5', 'Cheaters', 0
 WHERE NOT EXISTS (SELECT SourceID FROM dim.Sources WHERE SourceID = '5')
 
 SET IDENTITY_INSERT dim.Sources OFF
