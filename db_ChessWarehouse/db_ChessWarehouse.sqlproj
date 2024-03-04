@@ -79,6 +79,8 @@
     <Folder Include="dbo\Functions\" />
     <Folder Include="dbo\Stored Procedures\" />
     <Folder Include="Database Triggers\" />
+    <Folder Include="rpt" />
+    <Folder Include="rpt\Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dim\Tables\Colors.sql" />
@@ -194,6 +196,17 @@
     <Build Include="dbo\Stored Procedures\FormatLichessEvals.sql" />
     <Build Include="dbo\Stored Procedures\DeleteStagedLichessEvaluations.sql" />
     <Build Include="dbo\Stored Procedures\InsertLichessEvaluations.sql" />
+    <Build Include="Security\rpt.sql" />
+    <Build Include="rpt\Views\vwECOSummary.sql" />
+    <Build Include="rpt\Views\vwEventSummary.sql" />
+    <Build Include="rpt\Views\vwGameStatistics.sql" />
+    <Build Include="rpt\Views\vwGameSummary.sql" />
+    <Build Include="rpt\Views\vwOpponentSummary.sql" />
+    <Build Include="rpt\Views\vwRatingSummary.sql" />
+    <Build Include="rpt\Views\vwRoundSummary.sql" />
+    <Build Include="rpt\Views\vwYearlyRoundStatistics.sql" />
+    <Build Include="rpt\Views\vwYearlySummary.sql" />
+    <Build Include="rpt\Views\vwYearlyTStatistics.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
