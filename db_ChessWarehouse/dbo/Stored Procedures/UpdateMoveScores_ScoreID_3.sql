@@ -2,6 +2,17 @@
 
 AS
 
+/*
+	*** Score Name = EvaluationGroupComparison ***
+	This score compares the difficulty of playing similarly evaluated positions (per T5) by the source/time control/rating.
+	The more difficult the position is to play (per the T1-T5 percentages logged in fact.EvaluationSplits), the greater the move score can be.
+		A benefit of this method is that positions with multiple similarly evaluated top moves will assumed to be more likely to be played, and thus
+		less difficult to find and be allocated less importance.
+	After subtracting the probability of playing one of the top 5 moves (depending on if T1-T5 is played) from 1, the result is then scaled by a messy function.
+	I honestly have no idea how I came up with this function anymore, except that it somewhat looks like a compacted normal distribution and weights positions
+		where the historical win rate closer to 50% as more.
+*/
+
 UPDATE ms
 SET ms.ScoreValue = (
 	(1 - (

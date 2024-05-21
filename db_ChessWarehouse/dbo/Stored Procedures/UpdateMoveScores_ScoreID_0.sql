@@ -2,6 +2,12 @@
 
 AS
 
+/*
+	*** Score Name = TestScore ***
+	This proc is intended to be used for score testing.
+	It's main state is to set ms.ScoreValue and ms.MaxScoreValue to NULL.
+*/
+
 UPDATE ms
 SET ms.ScoreValue = NULL,
 	ms.MaxScoreValue = NULL

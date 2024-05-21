@@ -207,6 +207,7 @@
     <Build Include="rpt\Views\vwYearlyRoundStatistics.sql" />
     <Build Include="rpt\Views\vwYearlySummary.sql" />
     <Build Include="rpt\Views\vwYearlyTStatistics.sql" />
+    <Build Include="dbo\Functions\sqlSplit.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />

@@ -2,6 +2,12 @@
 
 AS
 
+/*
+	*** Score Name = WinProbabilityLostEqual ***
+	This score is identical to WinProbabilityLost except it always uses the same source and time control for comparison purposes.
+	The source and time control are set in dbo.Settings by the values associated with Name = WinProbabilityLostEqual Source and Name = WinProbabilityLostEqual Time Control.
+*/
+
 UPDATE ms
 SET ms.ScoreValue = CAST(t1.PDF * CAST(POWER(t1.CDF - ISNULL(mp.CDF, 0) - 1, 4) AS decimal(10,9)) AS decimal(10,9)),
 	ms.MaxScoreValue = t1.PDF
