@@ -23,7 +23,6 @@
     [T3]                DECIMAL (7, 6) NULL,
     [T4]                DECIMAL (7, 6) NULL,
     [T5]                DECIMAL (7, 6) NULL,
-    [Score]             DECIMAL (7, 4) NULL,
     [ACPL_Z]            DECIMAL (9, 6) NULL,
     [SDCPL_Z]           DECIMAL (9, 6) NULL,
     [ScACPL_Z]          DECIMAL (9, 6) NULL,
@@ -33,9 +32,6 @@
     [T3_Z]              DECIMAL (9, 6) NULL,
     [T4_Z]              DECIMAL (9, 6) NULL,
     [T5_Z]              DECIMAL (9, 6) NULL,
-    [Score_Z]           DECIMAL (9, 6) NULL,
-    [Composite_Z]       DECIMAL (9, 6) NULL,
-    [ROI]               AS             ((5)*[Composite_Z]+(50)),
     CONSTRAINT [PK_FEvaluation] PRIMARY KEY CLUSTERED ([SourceID] ASC, [EvaluationGroupID] ASC, [TimeControlID] ASC, [RatingID] ASC),
     CONSTRAINT [FK_Evaluation_EvaluationGroupID] FOREIGN KEY ([EvaluationGroupID]) REFERENCES [dim].[EvaluationGroups] ([EvaluationGroupID])
 );

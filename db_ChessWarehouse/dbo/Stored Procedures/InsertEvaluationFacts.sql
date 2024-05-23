@@ -28,8 +28,7 @@ INSERT INTO fact.Evaluation (
 	T2,
 	T3,
 	T4,
-	T5,
-	Score
+	T5
 )
 
 SELECT
@@ -55,32 +54,27 @@ CASE WHEN (SUM(CASE WHEN m.MoveScored = 1 THEN 1 ELSE 0 END)) = 0 THEN NULL ELSE
 1.00*SUM(CASE WHEN m.MoveScored = 0 THEN NULL ELSE (CASE WHEN m.Move_Rank <= 2 THEN 1 ELSE 0 END) END)/SUM(CASE WHEN m.MoveScored = 1 THEN 1 ELSE 0 END) AS T2,
 1.00*SUM(CASE WHEN m.MoveScored = 0 THEN NULL ELSE (CASE WHEN m.Move_Rank <= 3 THEN 1 ELSE 0 END) END)/SUM(CASE WHEN m.MoveScored = 1 THEN 1 ELSE 0 END) AS T3,
 1.00*SUM(CASE WHEN m.MoveScored = 0 THEN NULL ELSE (CASE WHEN m.Move_Rank <= 4 THEN 1 ELSE 0 END) END)/SUM(CASE WHEN m.MoveScored = 1 THEN 1 ELSE 0 END) AS T4,
-1.00*SUM(CASE WHEN m.MoveScored = 0 THEN NULL ELSE (CASE WHEN m.Move_Rank <= 5 THEN 1 ELSE 0 END) END)/SUM(CASE WHEN m.MoveScored = 1 THEN 1 ELSE 0 END) AS T5,
-100*SUM(CASE WHEN (m.MoveScored = 0 OR ms.MaxScoreValue = 0) THEN NULL ELSE ms.ScoreValue END)/SUM(CASE WHEN (m.MoveScored = 0 OR ms.MaxScoreValue = 0) THEN NULL ELSE ms.MaxScoreValue END) AS Score
+1.00*SUM(CASE WHEN m.MoveScored = 0 THEN NULL ELSE (CASE WHEN m.Move_Rank <= 5 THEN 1 ELSE 0 END) END)/SUM(CASE WHEN m.MoveScored = 1 THEN 1 ELSE 0 END) AS T5
 
 FROM lake.Moves m
-JOIN stat.MoveScores ms ON
-	m.GameID = ms.GameID AND
-	m.MoveNumber = ms.MoveNumber AND
-	m.ColorID = ms.ColorID
-JOIN lake.Games g
-	ON m.GameID = g.GameID
-JOIN dim.TimeControlDetail td
-	ON g.TimeControlDetailID = td.TimeControlDetailID
-JOIN dim.Colors c
-	ON m.ColorID = c.ColorID
+JOIN lake.Games g ON
+	m.GameID = g.GameID
+JOIN dim.TimeControlDetail td ON
+	g.TimeControlDetailID = td.TimeControlDetailID
+JOIN dim.Colors c ON
+	m.ColorID = c.ColorID
 JOIN dim.Ratings r ON
-	(CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) >= r.RatingID AND
-	(CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) <= r.RatingUpperBound
+	(CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) >= r.RatingID
+	AND (CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) <= r.RatingUpperBound
 JOIN dim.EvaluationGroups e ON
-	m.T1_Eval_POV >= e.LBound AND m.T1_Eval_POV <= e.UBound
+	m.T1_Eval_POV >= e.LBound
+	AND m.T1_Eval_POV <= e.UBound
 LEFT JOIN dim.CPLossGroups cp ON
-	m.CP_Loss >= cp.LBound AND
-	m.CP_Loss <= cp.UBound
+	m.CP_Loss >= cp.LBound
+	AND m.CP_Loss <= cp.UBound
 
 WHERE g.SourceID IN (3, 4)
 AND (CASE WHEN c.Color = 'White' THEN g.WhiteBerserk ELSE g.BlackBerserk END) = 0
-AND ms.ScoreID = dbo.GetSettingValue('Default Score')
 
 GROUP BY
 g.SourceID,
@@ -109,20 +103,21 @@ ms.ScoreID,
 
 FROM lake.Moves m
 JOIN stat.MoveScores ms ON
-	m.GameID = ms.GameID AND
-	m.MoveNumber = ms.MoveNumber AND
-	m.ColorID = ms.ColorID
-JOIN lake.Games g
-	ON m.GameID = g.GameID
-JOIN dim.TimeControlDetail td
-	ON g.TimeControlDetailID = td.TimeControlDetailID
-JOIN dim.Colors c
-	ON m.ColorID = c.ColorID
+	m.GameID = ms.GameID
+	AND m.MoveNumber = ms.MoveNumber
+	AND m.ColorID = ms.ColorID
+JOIN lake.Games g ON
+	m.GameID = g.GameID
+JOIN dim.TimeControlDetail td ON
+	g.TimeControlDetailID = td.TimeControlDetailID
+JOIN dim.Colors c ON
+	m.ColorID = c.ColorID
 JOIN dim.Ratings r ON
-	(CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) >= r.RatingID AND
-	(CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) <= r.RatingUpperBound
+	(CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) >= r.RatingID
+	AND (CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) <= r.RatingUpperBound
 JOIN dim.EvaluationGroups e ON
-	m.T1_Eval_POV >= e.LBound AND m.T1_Eval_POV <= e.UBound
+	m.T1_Eval_POV >= e.LBound
+	AND m.T1_Eval_POV <= e.UBound
 
 WHERE g.SourceID IN (3, 4)
 AND (CASE WHEN c.Color = 'White' THEN g.WhiteBerserk ELSE g.BlackBerserk END) = 0
