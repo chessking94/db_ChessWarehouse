@@ -59,10 +59,10 @@ wg.ACPL AS White_ACPL,
 bg.ACPL AS Black_ACPL,
 wg.SDCPL AS White_SDCPL,
 bg.SDCPL AS Black_SDCPL,
-wg.Score AS White_Score,
-bg.Score AS Black_Score,
-wg.ROI AS White_ROI,
-bg.ROI AS Black_ROI
+gsw.Score AS White_Score,
+gsb.Score AS Black_Score,
+gsw.ROI AS White_ROI,
+gsb.ROI AS Black_ROI
 
 FROM lake.Moves m
 --TODO: Consider adding join to stat.MoveScores, may kill performance. TBD
@@ -91,6 +91,14 @@ LEFT JOIN fact.Game wg ON
 LEFT JOIN fact.Game bg ON
 	g.GameID = bg.GameID AND
 	bg.ColorID = 2
+LEFT JOIN fact.GameScores gsw ON
+	g.GameID = gsw.GameID
+	AND gsw.ColorID = 1
+	AND gsw.ScoreID = dbo.GetSettingValue('Default Score')
+LEFT JOIN fact.GameScores gsb ON
+	g.GameID = gsb.GameID
+	AND gsb.ColorID = 2
+	AND gsb.ScoreID = dbo.GetSettingValue('Default Score')
 
 GROUP BY
 g.GameID,
@@ -146,7 +154,7 @@ wg.ACPL,
 bg.ACPL,
 wg.SDCPL,
 bg.SDCPL,
-wg.Score,
-bg.Score,
-wg.ROI,
-bg.ROI
+gsw.Score,
+gsb.Score,
+gsw.ROI,
+gsb.ROI

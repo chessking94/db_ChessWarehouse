@@ -424,13 +424,21 @@ g.GameID,
 s.SourceName,
 g.SiteGameID AS GameNumber,
 'Accuracy Score' AS Statistic,
-a.Score AS White,
-b.Score AS Black
+gsa.Score AS White,
+gsb.Score AS Black
 
 FROM fact.Game a
 JOIN fact.Game b ON
 	a.GameID = b.GameID AND
 	a.ColorID <> b.ColorID
+LEFT JOIN fact.GameScores gsa ON
+	a.GameID = gsa.GameID
+	AND a.ColorID = gsa.ColorID
+	AND gsa.ScoreID = dbo.GetSettingValue('Default Score')
+LEFT JOIN fact.GameScores gsb ON
+	b.GameID = gsb.GameID
+	AND b.ColorID = gsb.ColorID
+	AND gsb.ScoreID = dbo.GetSettingValue('Default Score')
 JOIN lake.Games g ON
 	a.GameID = g.GameID
 JOIN dim.Sources s ON
@@ -450,13 +458,21 @@ g.GameID,
 s.SourceName,
 g.SiteGameID AS GameNumber,
 'ROI' AS Statistic,
-a.ROI AS White,
-b.ROI AS Black
+gsa.ROI AS White,
+gsb.ROI AS Black
 
 FROM fact.Game a
 JOIN fact.Game b ON
 	a.GameID = b.GameID AND
 	a.ColorID <> b.ColorID
+LEFT JOIN fact.GameScores gsa ON
+	a.GameID = gsa.GameID
+	AND a.ColorID = gsa.ColorID
+	AND gsa.ScoreID = dbo.GetSettingValue('Default Score')
+LEFT JOIN fact.GameScores gsb ON
+	b.GameID = gsb.GameID
+	AND b.ColorID = gsb.ColorID
+	AND gsb.ScoreID = dbo.GetSettingValue('Default Score')
 JOIN lake.Games g ON
 	a.GameID = g.GameID
 JOIN dim.Sources s ON
