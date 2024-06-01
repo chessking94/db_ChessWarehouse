@@ -22,7 +22,7 @@ SET ms.ScoreValue = (
 		WHEN 3 THEN sp.T3
 		WHEN 4 THEN sp.T4
 		WHEN 5 THEN sp.T5
-		ELSE (CASE WHEN sp.T1 IS NULL THEN NULL ELSE 1 END)
+		ELSE (CASE WHEN sp.T1 IS NULL THEN NULL WHEN (sp.ScACPL IS NULL OR COALESCE(sp.ScSDCPL, 0) = 0) THEN 1 ELSE (sp.T5 + ((1-sp.T5)/(1+EXP(-((m.ScACPL-sp.ScACPL)/sp.ScSDCPL))))) END)  --convert ScACPL to a Z-score, run that through logistic function with range (sp.T5, 1) to determine final weight
 	END))*CAST((6*EXP(-(2*LOG(5+2*SQRT(6)))*(sp.WinPercentage-0.5)))/POWER((1+EXP(-(2*LOG(5+2*SQRT(6)))*(sp.WinPercentage-0.5))), 2)-0.5 AS decimal(10,9))
 ),
 	ms.MaxScoreValue = (1 - sp.T1)*CAST((6*EXP(-(2*LOG(5+2*SQRT(6)))*(sp.WinPercentage-0.5)))/POWER((1+EXP(-(2*LOG(5+2*SQRT(6)))*(sp.WinPercentage-0.5))), 2)-0.5 AS decimal(10,9))

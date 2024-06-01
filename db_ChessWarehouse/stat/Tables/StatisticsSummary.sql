@@ -6,7 +6,7 @@
     [TimeControlID]     TINYINT          NOT NULL,
     [ColorID]           TINYINT          NOT NULL,
     [EvaluationGroupID] TINYINT          NOT NULL,
-    [AggregationDate]   DATETIME         CONSTRAINT [DF_StatisticsSummary_AggregationDate] DEFAULT (getdate()) NOT NULL,
+    [CalculationDate]   DATETIME         CONSTRAINT [DF_StatisticsSummary_CalculationDate] DEFAULT (getdate()) NOT NULL,
     [RecordCount]       INT              NULL,
     [Average]           DECIMAL (18, 15) NULL,
     [StandardDeviation] DECIMAL (18, 15) NULL,
