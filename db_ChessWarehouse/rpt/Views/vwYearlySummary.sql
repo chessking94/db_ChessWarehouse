@@ -29,6 +29,7 @@ JOIN dim.Players p ON
 	g.WhitePlayerID = p.PlayerID
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	YEAR(g.GameDate) AS Year,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Me_ACPL,
@@ -55,11 +56,14 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	YEAR(g.GameDate)
 ) me ON
-	YEAR(g.GameDate) = me.Year
+	s.SourceID = me.SourceID
+	AND YEAR(g.GameDate) = me.Year
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	YEAR(g.GameDate) AS Year,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Opp_ACPL,
@@ -86,9 +90,11 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	YEAR(g.GameDate)
 ) opp ON
-	YEAR(g.GameDate) = opp.Year
+	s.SourceID = opp.SourceID
+	AND YEAR(g.GameDate) = opp.Year
 
 WHERE p.SelfFlag = 1
 
@@ -133,9 +139,9 @@ JOIN dim.Sources s ON
 	g.SourceID = s.SourceID
 JOIN dim.Players p ON
 	g.WhitePlayerID = p.PlayerID
-CROSS JOIN (
+LEFT JOIN (
 	SELECT
-	NULL AS Year,
+	s.SourceID,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Me_ACPL,
 	ISNULL(STDEV(m.CP_Loss), 0) AS Me_SDCPL,
@@ -159,10 +165,14 @@ CROSS JOIN (
 	WHERE p.SelfFlag = 1
 	AND c.Color = 'White'
 	AND m.MoveScored = 1
-) me
-CROSS JOIN (
+
+    GROUP BY
+    s.SourceID
+) me ON
+    s.SourceID = me.SourceID
+LEFT JOIN (
 	SELECT
-	'Total' AS Year,
+	s.SourceID,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Opp_ACPL,
 	ISNULL(STDEV(m.CP_Loss), 0) AS Opp_SDCPL,
@@ -186,7 +196,11 @@ CROSS JOIN (
 	WHERE p.SelfFlag = 1
 	AND c.Color = 'Black'
 	AND m.MoveScored = 1
-) opp
+
+    GROUP BY
+    s.SourceID
+) opp ON
+    s.SourceID = opp.SourceID
 
 WHERE p.SelfFlag = 1
 
@@ -232,6 +246,7 @@ JOIN dim.Players p ON
 	g.BlackPlayerID = p.PlayerID
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	YEAR(g.GameDate) AS Year,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Me_ACPL,
@@ -258,11 +273,14 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	YEAR(g.GameDate)
 ) me ON
-	YEAR(g.GameDate) = me.Year
+	s.SourceID = me.SourceID
+	AND YEAR(g.GameDate) = me.Year
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	YEAR(g.GameDate) AS Year,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Opp_ACPL,
@@ -289,9 +307,11 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	YEAR(g.GameDate)
 ) opp ON
-	YEAR(g.GameDate) = opp.Year
+	s.SourceID = opp.SourceID
+	AND YEAR(g.GameDate) = opp.Year
 
 WHERE p.SelfFlag = 1
 
@@ -336,9 +356,9 @@ JOIN dim.Sources s ON
 	g.SourceID = s.SourceID
 JOIN dim.Players p ON
 	g.BlackPlayerID = p.PlayerID
-CROSS JOIN (
+LEFT JOIN (
 	SELECT
-	NULL AS Year,
+	s.SourceID,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Me_ACPL,
 	ISNULL(STDEV(m.CP_Loss), 0) AS Me_SDCPL,
@@ -362,10 +382,14 @@ CROSS JOIN (
 	WHERE p.SelfFlag = 1
 	AND c.Color = 'Black'
 	AND m.MoveScored = 1
-) me
-CROSS JOIN (
+
+    GROUP BY
+    s.SourceID
+) me ON
+    s.SourceID = me.SourceID
+LEFT JOIN (
 	SELECT
-	NULL AS Year,
+	s.SourceID,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Opp_ACPL,
 	ISNULL(STDEV(m.CP_Loss), 0) AS Opp_SDCPL,
@@ -389,7 +413,11 @@ CROSS JOIN (
 	WHERE p.SelfFlag = 1
 	AND c.Color = 'White'
 	AND m.MoveScored = 1
-) opp
+
+    GROUP BY
+    s.SourceID
+) opp ON
+    s.SourceID = opp.SourceID
 
 WHERE p.SelfFlag = 1
 
@@ -403,6 +431,7 @@ me.Me_SDCPL,
 opp.Opp_SDCPL,
 me.Me_Score,
 opp.Opp_Score
+
 
 
 UNION
@@ -437,6 +466,7 @@ JOIN dim.Players bp ON
 	g.BlackPlayerID = bp.PlayerID
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	YEAR(g.GameDate) AS Year,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Me_ACPL,
@@ -462,11 +492,14 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	YEAR(g.GameDate)
 ) me ON
-	YEAR(g.GameDate) = me.Year
+	s.SourceID = me.SourceID
+	AND YEAR(g.GameDate) = me.Year
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	YEAR(g.GameDate) AS Year,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Opp_ACPL,
@@ -492,9 +525,11 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	YEAR(g.GameDate)
 ) opp ON
-	YEAR(g.GameDate) = opp.Year
+	s.SourceID = opp.SourceID
+	AND YEAR(g.GameDate) = opp.Year
 
 WHERE wp.SelfFlag = 1
 OR bp.SelfFlag = 1
