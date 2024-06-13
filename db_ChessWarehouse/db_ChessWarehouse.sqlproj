@@ -208,6 +208,7 @@
     <Build Include="rpt\Views\vwYearlySummary.sql" />
     <Build Include="rpt\Views\vwYearlyTStatistics.sql" />
     <Build Include="dbo\Functions\sqlSplit.sql" />
+    <Build Include="dbo\Tables\LichessDatabase.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
