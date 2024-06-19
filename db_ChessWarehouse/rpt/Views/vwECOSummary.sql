@@ -3,9 +3,9 @@
 AS
 
 SELECT
-s.SourceName,
-'White' AS MyColor,
 LEFT(e.ECO_Code, 1) AS ECO_Group,
+a.SourceName,
+'White' AS MyColor,
 e.Opening_Name,
 e.ECO_Code,
 a.Wins,
@@ -25,10 +25,9 @@ a.Me_Score,
 a.Opp_Score
 
 FROM dim.ECO e
-CROSS JOIN dim.Sources s
 LEFT JOIN (
 	SELECT
-	s.SourceID,
+	s.SourceName,
 	e.ECOID,
 	SUM(CASE WHEN g.Result = 1 THEN 1 ELSE 0 END) AS Wins,
 	SUM(CASE WHEN g.Result = 0 THEN 1 ELSE 0 END) AS Losses,
@@ -55,7 +54,6 @@ LEFT JOIN (
 		g.WhitePlayerID = p.PlayerID
 	LEFT JOIN (
 		SELECT
-		s.SourceID,
 		e.ECOID,
 		COUNT(m.MoveNumber) AS MovesAnalyzed,
 		AVG(m.CP_Loss) AS Me_ACPL,
@@ -84,14 +82,11 @@ LEFT JOIN (
 		AND m.MoveScored = 1
 
 		GROUP BY
-		s.SourceID,
 		e.ECOID
 	) me ON
 		e.ECOID = me.ECOID
-		AND s.SourceID = me.SourceID
 	LEFT JOIN (
 		SELECT
-		s.SourceID,
 		e.ECOID,
 		COUNT(m.MoveNumber) AS MovesAnalyzed,
 		AVG(m.CP_Loss) AS Opp_ACPL,
@@ -120,16 +115,14 @@ LEFT JOIN (
 		AND m.MoveScored = 1
 
 		GROUP BY
-		s.SourceID,
 		e.ECOID
 	) opp ON
 		e.ECOID = opp.ECOID
-		AND s.SourceID = opp.SourceID
 
 	WHERE p.SelfFlag = 1
 
 	GROUP BY
-	s.SourceID,
+	s.SourceName,
 	e.ECOID,
 	me.MovesAnalyzed,
 	opp.MovesAnalyzed,
@@ -141,18 +134,15 @@ LEFT JOIN (
 	opp.Opp_Score
 ) a ON
 	e.ECOID = a.ECOID
-	AND s.SourceID = a.SourceID
-
-WHERE s.PersonalFlag = 1
 
 
 UNION
 
 
 SELECT
-s.SourceName,
-'Black' AS MyColor,
 LEFT(e.ECO_Code, 1) AS ECO_Group,
+a.SourceName,
+'Black' AS MyColor,
 e.Opening_Name,
 e.ECO_Code,
 a.Wins,
@@ -172,18 +162,17 @@ a.Me_Score,
 a.Opp_Score
 
 FROM dim.ECO e
-CROSS JOIN dim.Sources s
 LEFT JOIN (
 	SELECT
-	s.SourceID,
+	s.SourceName,
 	e.ECOID,
 	SUM(CASE WHEN g.Result = 0 THEN 1 ELSE 0 END) AS Wins,
 	SUM(CASE WHEN g.Result = 1 THEN 1 ELSE 0 END) AS Losses,
 	SUM(CASE WHEN g.Result = 0.5 THEN 1 ELSE 0 END) AS Draws,
 	COUNT(g.GameID) AS TotalGames,
 	(SUM(CASE WHEN g.Result = 0 THEN 1 ELSE 0 END) + 0.5*SUM(CASE WHEN g.Result = 0.5 THEN 1 ELSE 0 END))/COUNT(g.GameID) AS Score,
-	AVG(NULLIF(g.WhiteElo, 0)) AS AvgRating,
-	dbo.GetPerfRating(AVG(NULLIF(g.WhiteElo, 0)), (SUM(CASE WHEN g.Result = 0 THEN 1 ELSE 0 END) + 0.5*SUM(CASE WHEN g.Result = 0.5 THEN 1 ELSE 0 END))/COUNT(g.GameID)) AS PerfRating,
+	AVG(NULLIF(g.BlackElo, 0)) AS AvgRating,
+	dbo.GetPerfRating(AVG(NULLIF(g.BlackElo, 0)), (SUM(CASE WHEN g.Result = 0 THEN 1 ELSE 0 END) + 0.5*SUM(CASE WHEN g.Result = 0.5 THEN 1 ELSE 0 END))/COUNT(g.GameID)) AS PerfRating,
 	ISNULL(me.MovesAnalyzed, 0) AS Me_MovesAnalyzed,
 	ISNULL(opp.MovesAnalyzed, 0) AS Opp_MovesAnalyzed,
 	me.Me_ACPL,
@@ -202,7 +191,6 @@ LEFT JOIN (
 		g.BlackPlayerID = p.PlayerID
 	LEFT JOIN (
 		SELECT
-		s.SourceID,
 		e.ECOID,
 		COUNT(m.MoveNumber) AS MovesAnalyzed,
 		AVG(m.CP_Loss) AS Me_ACPL,
@@ -224,21 +212,18 @@ LEFT JOIN (
 		JOIN dim.ECO e ON
 			g.ECOID = e.ECOID
 		JOIN dim.Players p ON
-			g.BlackPlayerID = p.PlayerID
+			g.WhitePlayerID = p.PlayerID
 
 		WHERE p.SelfFlag = 1
 		AND c.Color = 'Black'
 		AND m.MoveScored = 1
 
 		GROUP BY
-		s.SourceID,
 		e.ECOID
 	) me ON
 		e.ECOID = me.ECOID
-		AND s.SourceID = me.SourceID
 	LEFT JOIN (
 		SELECT
-		s.SourceID,
 		e.ECOID,
 		COUNT(m.MoveNumber) AS MovesAnalyzed,
 		AVG(m.CP_Loss) AS Opp_ACPL,
@@ -260,23 +245,21 @@ LEFT JOIN (
 		JOIN dim.ECO e ON
 			g.ECOID = e.ECOID
 		JOIN dim.Players p ON
-			g.BlackPlayerID = p.PlayerID
+			g.WhitePlayerID = p.PlayerID
 
 		WHERE p.SelfFlag = 1
 		AND c.Color = 'White'
 		AND m.MoveScored = 1
 
 		GROUP BY
-		s.SourceID,
 		e.ECOID
 	) opp ON
 		e.ECOID = opp.ECOID
-		AND s.SourceID = opp.SourceID
 
 	WHERE p.SelfFlag = 1
 
 	GROUP BY
-	s.SourceID,
+	s.SourceName,
 	e.ECOID,
 	me.MovesAnalyzed,
 	opp.MovesAnalyzed,
@@ -288,6 +271,3 @@ LEFT JOIN (
 	opp.Opp_Score
 ) a ON
 	e.ECOID = a.ECOID
-	AND s.SourceID = a.SourceID
-
-WHERE s.PersonalFlag = 1
