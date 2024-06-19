@@ -27,6 +27,7 @@ JOIN dim.Players p ON
 	g.WhitePlayerID = p.PlayerID
 LEFT JOIN (
 	SELECT
+	s.SourceName,
 	YEAR(g.GameDate) AS Year,
 	COUNT(m.MoveNumber) AS Me_MovesAnalyzed,
 	1.00*SUM(CASE WHEN m.Move_Rank <= 1 THEN 1 ELSE 0 END)/COUNT(m.MoveNumber) AS Me_T1,
@@ -50,11 +51,14 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceName,
 	YEAR(g.GameDate)
 ) me ON
-	YEAR(g.GameDate) = me.Year
+	s.SourceName = me.SourceName
+	AND YEAR(g.GameDate) = me.Year
 LEFT JOIN (
 	SELECT
+	s.SourceName,
 	YEAR(g.GameDate) AS Year,
 	COUNT(m.MoveNumber) AS Opp_MovesAnalyzed,
 	1.00*SUM(CASE WHEN m.Move_Rank <= 1 THEN 1 ELSE 0 END)/COUNT(m.MoveNumber) AS Opp_T1,
@@ -78,9 +82,11 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceName,
 	YEAR(g.GameDate)
 ) opp ON
-	YEAR(g.GameDate) = opp.Year
+	s.SourceName = opp.SourceName
+	AND YEAR(g.GameDate) = opp.Year
 
 WHERE p.SelfFlag = 1
 
@@ -129,6 +135,7 @@ JOIN dim.Players p ON
 	g.BlackPlayerID = p.PlayerID
 LEFT JOIN (
 	SELECT
+	s.SourceName,
 	YEAR(g.GameDate) AS Year,
 	COUNT(m.MoveNumber) AS Me_MovesAnalyzed,
 	1.00*SUM(CASE WHEN m.Move_Rank <= 1 THEN 1 ELSE 0 END)/COUNT(m.MoveNumber) AS Me_T1,
@@ -152,11 +159,14 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceName,
 	YEAR(g.GameDate)
 ) me ON
-	YEAR(g.GameDate) = me.Year
+	s.SourceName = me.SourceName
+	AND YEAR(g.GameDate) = me.Year
 LEFT JOIN (
 	SELECT
+	s.SourceName,
 	YEAR(g.GameDate) AS Year,
 	COUNT(m.MoveNumber) AS Opp_MovesAnalyzed,
 	1.00*SUM(CASE WHEN m.Move_Rank <= 1 THEN 1 ELSE 0 END)/COUNT(m.MoveNumber) AS Opp_T1,
@@ -180,9 +190,11 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceName,
 	YEAR(g.GameDate)
 ) opp ON
-	YEAR(g.GameDate) = opp.Year
+	s.SourceName = opp.SourceName
+	AND YEAR(g.GameDate) = opp.Year
 
 WHERE p.SelfFlag = 1
 
@@ -233,6 +245,7 @@ JOIN dim.Players bp ON
     g.BlackPlayerID = bp.PlayerID
 LEFT JOIN (
 	SELECT
+	s.SourceName,
 	YEAR(g.GameDate) AS Year,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	1.00*SUM(CASE WHEN m.Move_Rank <= 1 THEN 1 ELSE 0 END)/COUNT(m.MoveNumber) AS Me_T1,
@@ -255,11 +268,14 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceName,
 	YEAR(g.GameDate)
 ) me ON
-	YEAR(g.GameDate) = me.Year
+	s.SourceName = me.SourceName
+	AND YEAR(g.GameDate) = me.Year
 LEFT JOIN (
 	SELECT
+	s.SourceName,
 	YEAR(g.GameDate) AS Year,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	1.00*SUM(CASE WHEN m.Move_Rank <= 1 THEN 1 ELSE 0 END)/COUNT(m.MoveNumber) AS Opp_T1,
@@ -282,9 +298,11 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceName,
 	YEAR(g.GameDate)
 ) opp ON
-	YEAR(g.GameDate) = opp.Year
+	s.SourceName = opp.SourceName
+	AND YEAR(g.GameDate) = opp.Year
 
 WHERE wp.SelfFlag = 1
 OR bp.SelfFlag = 1
