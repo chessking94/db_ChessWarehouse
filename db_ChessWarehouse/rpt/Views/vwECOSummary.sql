@@ -54,6 +54,7 @@ LEFT JOIN (
 		g.WhitePlayerID = p.PlayerID
 	LEFT JOIN (
 		SELECT
+		s.SourceID,
 		e.ECOID,
 		COUNT(m.MoveNumber) AS MovesAnalyzed,
 		AVG(m.CP_Loss) AS Me_ACPL,
@@ -82,11 +83,14 @@ LEFT JOIN (
 		AND m.MoveScored = 1
 
 		GROUP BY
+		s.SourceID,
 		e.ECOID
 	) me ON
-		e.ECOID = me.ECOID
+		s.SourceID = me.SourceID
+		AND e.ECOID = me.ECOID
 	LEFT JOIN (
 		SELECT
+		s.SourceID,
 		e.ECOID,
 		COUNT(m.MoveNumber) AS MovesAnalyzed,
 		AVG(m.CP_Loss) AS Opp_ACPL,
@@ -115,9 +119,11 @@ LEFT JOIN (
 		AND m.MoveScored = 1
 
 		GROUP BY
+		s.SourceID,
 		e.ECOID
 	) opp ON
-		e.ECOID = opp.ECOID
+		s.SourceID = opp.SourceID
+		AND e.ECOID = opp.ECOID
 
 	WHERE p.SelfFlag = 1
 
@@ -191,6 +197,7 @@ LEFT JOIN (
 		g.BlackPlayerID = p.PlayerID
 	LEFT JOIN (
 		SELECT
+		s.SourceID,
 		e.ECOID,
 		COUNT(m.MoveNumber) AS MovesAnalyzed,
 		AVG(m.CP_Loss) AS Me_ACPL,
@@ -219,11 +226,14 @@ LEFT JOIN (
 		AND m.MoveScored = 1
 
 		GROUP BY
+		s.SourceID,
 		e.ECOID
 	) me ON
-		e.ECOID = me.ECOID
+		s.SourceID = me.SourceID
+		AND e.ECOID = me.ECOID
 	LEFT JOIN (
 		SELECT
+		s.SourceID,
 		e.ECOID,
 		COUNT(m.MoveNumber) AS MovesAnalyzed,
 		AVG(m.CP_Loss) AS Opp_ACPL,
@@ -252,9 +262,11 @@ LEFT JOIN (
 		AND m.MoveScored = 1
 
 		GROUP BY
+		s.SourceID,
 		e.ECOID
 	) opp ON
-		e.ECOID = opp.ECOID
+		s.SourceID = opp.SourceID
+		AND e.ECOID = opp.ECOID
 
 	WHERE p.SelfFlag = 1
 
