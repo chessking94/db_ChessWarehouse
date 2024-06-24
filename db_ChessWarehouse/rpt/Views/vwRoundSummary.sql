@@ -29,6 +29,7 @@ JOIN dim.Players p ON
 	g.WhitePlayerID = p.PlayerID
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	g.RoundNum,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Me_ACPL,
@@ -55,11 +56,14 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	g.RoundNum
 ) me ON
-	g.RoundNum = me.RoundNum
+	s.SourceID = me.SourceID
+	AND g.RoundNum = me.RoundNum
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	g.RoundNum,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Opp_ACPL,
@@ -86,9 +90,11 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	g.RoundNum
 ) opp ON
-	g.RoundNum = opp.RoundNum
+	s.SourceID = opp.SourceID
+	AND g.RoundNum = opp.RoundNum
 
 WHERE p.SelfFlag = 1
 
@@ -135,6 +141,7 @@ JOIN dim.Players p ON
 	g.BlackPlayerID = p.PlayerID
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	g.RoundNum,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Me_ACPL,
@@ -161,11 +168,14 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	g.RoundNum
 ) me ON
-	g.RoundNum = me.RoundNum
+	s.SourceID = me.SourceID
+	AND g.RoundNum = me.RoundNum
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	g.RoundNum,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Opp_ACPL,
@@ -192,9 +202,11 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	g.RoundNum
 ) opp ON
-	g.RoundNum = opp.RoundNum
+	s.SourceID = opp.SourceID
+	AND g.RoundNum = opp.RoundNum
 
 WHERE p.SelfFlag = 1
 
@@ -243,6 +255,7 @@ JOIN dim.Players bp ON
 	g.BlackPlayerID = bp.PlayerID
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	g.RoundNum,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Me_ACPL,
@@ -268,11 +281,14 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	g.RoundNum
 ) me ON
-	g.RoundNum = me.RoundNum
+	s.SourceID = me.SourceID
+	AND g.RoundNum = me.RoundNum
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	g.RoundNum,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Opp_ACPL,
@@ -298,9 +314,11 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	g.RoundNum
 ) opp ON
-	g.RoundNum = opp.RoundNum
+	s.SourceID = opp.SourceID
+	AND g.RoundNum = opp.RoundNum
 
 WHERE wp.SelfFlag = 1
 OR bp.SelfFlag = 1

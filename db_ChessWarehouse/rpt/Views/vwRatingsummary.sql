@@ -32,6 +32,7 @@ JOIN dim.Ratings br ON
 	g.BlackElo <= br.RatingUpperBound
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	br.RatingID,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Me_ACPL,
@@ -61,11 +62,14 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	br.RatingID
 ) me ON
-	br.RatingID = me.RatingID
+	s.SourceID = me.SourceID
+	AND br.RatingID = me.RatingID
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	br.RatingID,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Opp_ACPL,
@@ -95,9 +99,11 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	br.RatingID
 ) opp ON
-	br.RatingID = opp.RatingID
+	s.SourceID = opp.SourceID
+	AND br.RatingID = opp.RatingID
 
 WHERE p.SelfFlag = 1
 
@@ -147,6 +153,7 @@ JOIN dim.Ratings wr ON
 	g.WhiteElo <= wr.RatingUpperBound
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	wr.RatingID,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Me_ACPL,
@@ -176,11 +183,14 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	wr.RatingID
 ) me ON
-	wr.RatingID = me.RatingID
+	s.SourceID = me.SourceID
+	AND wr.RatingID = me.RatingID
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	wr.RatingID,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Opp_ACPL,
@@ -210,9 +220,11 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	wr.RatingID
 ) opp ON
-	wr.RatingID = opp.RatingID
+	s.SourceID = opp.SourceID
+	AND wr.RatingID = opp.RatingID
 
 WHERE p.SelfFlag = 1
 
@@ -267,6 +279,7 @@ JOIN dim.Ratings br ON
 	g.BlackElo <= br.RatingUpperBound
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	CASE WHEN c.Color = 'White' THEN br.RatingID ELSE wr.RatingID END AS RatingID,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Me_ACPL,
@@ -298,11 +311,14 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	CASE WHEN c.Color = 'White' THEN br.RatingID ELSE wr.RatingID END
 ) me ON
-	(CASE WHEN wp.SelfFlag = 1 THEN br.RatingID ELSE wr.RatingID END) = me.RatingID
+	s.SourceID = me.SourceID
+	AND (CASE WHEN wp.SelfFlag = 1 THEN br.RatingID ELSE wr.RatingID END) = me.RatingID
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	CASE WHEN c.Color = 'White' THEN wr.RatingID ELSE br.RatingID END AS RatingID,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
 	AVG(m.CP_Loss) AS Opp_ACPL,
@@ -334,9 +350,11 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	CASE WHEN c.Color = 'White' THEN wr.RatingID ELSE br.RatingID END
 ) opp ON
-	(CASE WHEN wp.SelfFlag = 1 THEN br.RatingID ELSE wr.RatingID END) = opp.RatingID
+	s.SourceID = opp.SourceID
+	AND (CASE WHEN wp.SelfFlag = 1 THEN br.RatingID ELSE wr.RatingID END) = opp.RatingID
 
 WHERE wp.SelfFlag = 1
 OR bp.SelfFlag = 1

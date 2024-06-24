@@ -30,6 +30,7 @@ JOIN dim.Players p ON
 	g.WhitePlayerID = p.PlayerID
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	YEAR(g.GameDate) AS Year, 
 	g.RoundNum,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
@@ -57,13 +58,16 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	YEAR(g.GameDate),
 	g.RoundNum
 ) me ON
-	YEAR(g.GameDate) = me.Year AND
-	g.RoundNum = me.RoundNum
+	s.SourceID = me.SourceID
+	AND YEAR(g.GameDate) = me.Year
+	AND g.RoundNum = me.RoundNum
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	YEAR(g.GameDate) AS Year,
 	g.RoundNum,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
@@ -91,11 +95,13 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	YEAR(g.GameDate),
 	g.RoundNum
 ) opp ON
-	YEAR(g.GameDate) = opp.Year AND
-	g.RoundNum = opp.RoundNum
+	s.SourceID = opp.SourceID
+	AND YEAR(g.GameDate) = opp.Year
+	AND g.RoundNum = opp.RoundNum
 
 WHERE p.SelfFlag = 1
 
@@ -144,6 +150,7 @@ JOIN dim.Players p ON
 	g.BlackPlayerID = p.PlayerID
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	YEAR(g.GameDate) AS Year, 
 	g.RoundNum,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
@@ -171,13 +178,16 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	YEAR(g.GameDate),
 	g.RoundNum
 ) me ON
-	YEAR(g.GameDate) = me.Year AND
-	g.RoundNum = me.RoundNum
+	s.SourceID = me.SourceID
+	AND YEAR(g.GameDate) = me.Year
+	AND g.RoundNum = me.RoundNum
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	YEAR(g.GameDate) AS Year,
 	g.RoundNum,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
@@ -205,11 +215,13 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	YEAR(g.GameDate),
 	g.RoundNum
 ) opp ON
-	YEAR(g.GameDate) = opp.Year AND
-	g.RoundNum = opp.RoundNum
+	s.SourceID = opp.SourceID
+	AND YEAR(g.GameDate) = opp.Year
+	AND g.RoundNum = opp.RoundNum
 
 WHERE p.SelfFlag = 1
 
@@ -260,6 +272,7 @@ JOIN dim.Players bp ON
 	g.BlackPlayerID = bp.PlayerID
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	YEAR(g.GameDate) AS Year,
 	g.RoundNum,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
@@ -286,13 +299,16 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	YEAR(g.GameDate),
 	g.RoundNum
 ) me ON
-	YEAR(g.GameDate) = me.Year AND
-	g.RoundNum = me.RoundNum
+	s.SourceID = me.SourceID
+	AND YEAR(g.GameDate) = me.Year
+	AND g.RoundNum = me.RoundNum
 LEFT JOIN (
 	SELECT
+	s.SourceID,
 	YEAR(g.GameDate) AS Year,
 	g.RoundNum,
 	COUNT(m.MoveNumber) AS MovesAnalyzed,
@@ -319,11 +335,13 @@ LEFT JOIN (
 	AND m.MoveScored = 1
 
 	GROUP BY
+	s.SourceID,
 	YEAR(g.GameDate),
 	g.RoundNum
 ) opp ON
-	YEAR(g.GameDate) = opp.Year AND
-	g.RoundNum = opp.RoundNum
+	s.SourceID = opp.SourceID
+	AND YEAR(g.GameDate) = opp.Year
+	AND g.RoundNum = opp.RoundNum
 
 WHERE wp.SelfFlag = 1
 OR bp.SelfFlag = 1
