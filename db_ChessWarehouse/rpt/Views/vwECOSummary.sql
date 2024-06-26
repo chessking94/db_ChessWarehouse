@@ -4,7 +4,7 @@ AS
 
 SELECT
 LEFT(e.ECO_Code, 1) AS ECO_Group,
-a.SourceName,
+s.SourceName,
 'White' AS MyColor,
 e.Opening_Name,
 e.ECO_Code,
@@ -25,9 +25,10 @@ a.Me_Score,
 a.Opp_Score
 
 FROM dim.ECO e
+CROSS JOIN dim.Sources s
 LEFT JOIN (
 	SELECT
-	s.SourceName,
+	s.SourceID,
 	e.ECOID,
 	SUM(CASE WHEN g.Result = 1 THEN 1 ELSE 0 END) AS Wins,
 	SUM(CASE WHEN g.Result = 0 THEN 1 ELSE 0 END) AS Losses,
@@ -128,7 +129,7 @@ LEFT JOIN (
 	WHERE p.SelfFlag = 1
 
 	GROUP BY
-	s.SourceName,
+	s.SourceID,
 	e.ECOID,
 	me.MovesAnalyzed,
 	opp.MovesAnalyzed,
@@ -140,6 +141,9 @@ LEFT JOIN (
 	opp.Opp_Score
 ) a ON
 	e.ECOID = a.ECOID
+	AND s.SourceID = a.SourceID
+
+WHERE s.PersonalFlag = 1
 
 
 UNION
@@ -147,7 +151,7 @@ UNION
 
 SELECT
 LEFT(e.ECO_Code, 1) AS ECO_Group,
-a.SourceName,
+s.SourceName,
 'Black' AS MyColor,
 e.Opening_Name,
 e.ECO_Code,
@@ -168,9 +172,10 @@ a.Me_Score,
 a.Opp_Score
 
 FROM dim.ECO e
+CROSS JOIN dim.Sources s
 LEFT JOIN (
 	SELECT
-	s.SourceName,
+	s.SourceID,
 	e.ECOID,
 	SUM(CASE WHEN g.Result = 0 THEN 1 ELSE 0 END) AS Wins,
 	SUM(CASE WHEN g.Result = 1 THEN 1 ELSE 0 END) AS Losses,
@@ -271,7 +276,7 @@ LEFT JOIN (
 	WHERE p.SelfFlag = 1
 
 	GROUP BY
-	s.SourceName,
+	s.SourceID,
 	e.ECOID,
 	me.MovesAnalyzed,
 	opp.MovesAnalyzed,
@@ -283,3 +288,6 @@ LEFT JOIN (
 	opp.Opp_Score
 ) a ON
 	e.ECOID = a.ECOID
+	AND s.SourceID = a.SourceID
+
+WHERE s.PersonalFlag = 1
