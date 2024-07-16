@@ -1,6 +1,8 @@
 ﻿CREATE TABLE [dbo].[LichessDatabase]
 (
 	[Filename] VARCHAR(50) NOT NULL, 
+    [Download_Start] DATETIME NULL, 
+    [Download_End] DATETIME NULL, 
     [Decompression_Start] DATETIME NULL, 
     [Decompression_End] DATETIME NULL, 
     [ErrorLog_Start] DATETIME NULL, 
