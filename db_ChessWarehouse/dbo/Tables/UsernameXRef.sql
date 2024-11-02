@@ -4,7 +4,7 @@
     [FirstName]        VARCHAR (30) NULL,
     [Username]         VARCHAR (50) NULL,
     [Source]           VARCHAR (15) NULL,
-    [EEHFlag]          BIT          NULL,
+    [SelfFlag]         BIT          NULL,
     [DownloadFlag]     BIT          NULL,
     [LastActiveOnline] DATETIME     NULL,
     [UserStatus]       VARCHAR (10) NULL,
