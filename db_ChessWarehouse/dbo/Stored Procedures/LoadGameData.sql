@@ -1,28 +1,30 @@
 ﻿
-CREATE PROCEDURE [dbo].[LoadGameData]
+CREATE PROCEDURE [dbo].[LoadGameData] (
+	@piFileName VARCHAR(100) = NULL  --the base name, i.e. MyFile.game
+)
 
 AS
 
-DECLARE @filetypeid smallint = 1 --hard code file type; one proc, one type
-DECLARE @dir varchar(200)
-DECLARE @ext varchar(10)
-DECLARE @cmd varchar(500)
-DECLARE @err_msg nvarchar(100)
+DECLARE @filetypeid SMALLINT = 1 --hard code file type; one proc, one type
+DECLARE @dir VARCHAR(200)
+DECLARE @ext VARCHAR(10)
+DECLARE @cmd VARCHAR(500)
+DECLARE @err_msg nVARCHAR(100)
 
-DECLARE @file_ct int
-DECLARE @filename varchar(100)
-DECLARE @dte datetime
-DECLARE @fhid int
-DECLARE @rec_ct int
-DECLARE @fld varchar(20)
-DECLARE @err_ct int
+DECLARE @file_ct INT
+DECLARE @filename VARCHAR(100)
+DECLARE @dte DATETIME
+DECLARE @fhid INT
+DECLARE @rec_ct INT
+DECLARE @fld VARCHAR(20)
+DECLARE @err_ct INT
 
 --get a listing of files to import; use file type ID to differentiate temp tables across procs
 IF (OBJECT_ID('tempdb..#directory1') IS NOT NULL) DROP TABLE #directory1
-CREATE TABLE #directory1 (content varchar(1000))
+CREATE TABLE #directory1 (content VARCHAR(1000))
 
 IF (OBJECT_ID('tempdb..#pendingfiles1') IS NOT NULL) DROP TABLE #pendingfiles1
-CREATE TABLE #pendingfiles1 (filename varchar(200))
+CREATE TABLE #pendingfiles1 (filename VARCHAR(200))
 
 SET @dir = dbo.GetSettingValue('FileProcessing Directory')
 IF RIGHT(@dir, 1) <> '\' SET @dir = @dir + '\'
@@ -33,16 +35,33 @@ SET @cmd = 'DIR "' + @dir + '"'
 INSERT INTO #directory1
 EXEC master.dbo.xp_cmdshell @cmd
 
-SELECT @ext = FileExtension FROM FileTypes WHERE FileTypeID = @filetypeid
-INSERT INTO #pendingfiles1
-SELECT LTRIM(RTRIM(SUBSTRING(content, 40, LEN(content)))) FROM #directory1 WHERE (CASE WHEN content LIKE '%.%' THEN REVERSE(LEFT(REVERSE(content), CHARINDEX('.', REVERSE(content)) - 1)) ELSE NULL END) = @ext
+IF @piFileName IS NULL
+BEGIN
+	SELECT @ext = FileExtension FROM FileTypes WHERE FileTypeID = @filetypeid
+	INSERT INTO #pendingfiles1
+	SELECT LTRIM(RTRIM(SUBSTRING(content, 40, LEN(content)))) FROM #directory1 WHERE (CASE WHEN content LIKE '%.%' THEN REVERSE(LEFT(REVERSE(content), CHARINDEX('.', REVERSE(content)) - 1)) ELSE NULL END) = @ext
+END
+
+ELSE
+
+BEGIN
+	DECLARE @FilePath VARCHAR(200) = @dir + @piFileName
+	DECLARE @FileExists INT = 0
+    EXEC master.dbo.xp_fileexist @FilePath, @FileExists OUTPUT
+
+    IF @FileExists = 1
+	BEGIN
+		INSERT INTO #pendingfiles1
+		SELECT @piFileName
+	END
+END
 
 SELECT @file_ct = COUNT(filename) FROM #pendingfiles1
 IF @file_ct = 0
 BEGIN
 	SET @err_msg = 'No files found to import'
 	RAISERROR(@err_msg, 1, 1)
-	RETURN @err_msg
+	RETURN -1
 END
 
 EXEC dbo.DeleteStagedGameData @errors = 0
