@@ -214,6 +214,10 @@
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
+    <None Include="Script.PostDeployment_Job_ImportGames.sql" />
+    <None Include="Script.PostDeployment_Job_RecalculateFactTables.sql" />
+    <None Include="Script.PostDeployment_Job_RecalculateMoveScores.sql" />
+    <None Include="Script.PostDeployment_Job_RecalculateZScores.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\160\SqlSchemas\master.dacpac">
