@@ -1,5 +1,4 @@
-﻿
-CREATE PROCEDURE [dbo].[LoadGameData] (
+﻿CREATE PROCEDURE [dbo].[LoadGameData] (
 	@piFileName VARCHAR(100),  --the base name, i.e. MyFile.game
 	@poErrorMessage NVARCHAR(100) = NULL OUTPUT  --description of resulting error, if one occurred
 )
