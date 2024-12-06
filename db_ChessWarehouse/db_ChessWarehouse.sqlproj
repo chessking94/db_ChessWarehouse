@@ -81,6 +81,8 @@
     <Folder Include="Database Triggers\" />
     <Folder Include="rpt" />
     <Folder Include="rpt\Views" />
+    <Folder Include="Security\Schemas" />
+    <Folder Include="Security\Roles" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dim\Tables\Colors.sql" />
@@ -181,12 +183,6 @@
     <Build Include="dbo\Stored Procedures\UpdateMoveScores_ScoreID_2.sql" />
     <Build Include="dbo\Stored Procedures\InsertMissingMoveScores.sql" />
     <Build Include="Database Triggers\backup_objects.sql" />
-    <Build Include="Security\dim.sql" />
-    <Build Include="Security\doc.sql" />
-    <Build Include="Security\fact.sql" />
-    <Build Include="Security\lake.sql" />
-    <Build Include="Security\stage.sql" />
-    <Build Include="Security\stat.sql" />
     <Build Include="dbo\Stored Procedures\InsertNewEngines.sql" />
     <Build Include="lake\Tables\LichessEvaluations.sql" />
     <Build Include="stage\Tables\LichessEvaluations.sql" />
@@ -196,7 +192,6 @@
     <Build Include="dbo\Stored Procedures\FormatLichessEvals.sql" />
     <Build Include="dbo\Stored Procedures\DeleteStagedLichessEvaluations.sql" />
     <Build Include="dbo\Stored Procedures\InsertLichessEvaluations.sql" />
-    <Build Include="Security\rpt.sql" />
     <Build Include="rpt\Views\vwECOSummary.sql" />
     <Build Include="rpt\Views\vwEventSummary.sql" />
     <Build Include="rpt\Views\vwGameStatistics.sql" />
@@ -211,6 +206,14 @@
     <Build Include="dbo\Tables\LichessDatabase.sql" />
     <Build Include="rpt\Views\vwTimeControlSummary.sql" />
     <Build Include="rpt\Views\vwYearlyTimeControlStatistics.sql" />
+    <Build Include="Security\Schemas\dim.sql" />
+    <Build Include="Security\Schemas\doc.sql" />
+    <Build Include="Security\Schemas\fact.sql" />
+    <Build Include="Security\Schemas\lake.sql" />
+    <Build Include="Security\Schemas\rpt.sql" />
+    <Build Include="Security\Schemas\stage.sql" />
+    <Build Include="Security\Schemas\stat.sql" />
+    <Build Include="Security\Roles\db_executor.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="Script.PostDeployment.sql" />
