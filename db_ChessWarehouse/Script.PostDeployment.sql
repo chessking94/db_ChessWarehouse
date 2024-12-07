@@ -44,6 +44,7 @@ END
 ALTER ROLE [db_datareader] ADD MEMBER [automation_user]
 ALTER ROLE [db_datawriter] ADD MEMBER [automation_user]
 ALTER ROLE [db_executor] ADD MEMBER [automation_user]
+ALTER ROLE [db_ddladmin] ADD MEMBER [automation_user]
 
 ----job_owner
 IF NOT EXISTS (SELECT name FROM sys.server_principals WHERE name = 'job_owner' AND type_desc = 'SQL_LOGIN')
