@@ -6,6 +6,7 @@
     [DateCompleted] DATETIME      NULL,
     [Records]       INT           NULL,
     [Errors]        INT           NULL,
+    [ErrorMessage]  NVARCHAR(MAX) NULL, 
     CONSTRAINT [PK_FileHistory] PRIMARY KEY CLUSTERED ([FileID] ASC),
     CONSTRAINT [FK_FileHistory_FileTypes] FOREIGN KEY ([FileTypeID]) REFERENCES [dbo].[FileTypes] ([FileTypeID])
 );

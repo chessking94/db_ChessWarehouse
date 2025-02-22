@@ -1,6 +1,6 @@
 ﻿CREATE PROCEDURE [dbo].[LoadLichessEvaluations] (
 	@piFileName VARCHAR(100),  --the base name, i.e. MyFile.game
-	@poErrorMessage NVARCHAR(100) = NULL OUTPUT  --description of resulting error, if one occurred
+	@poErrorMessage NVARCHAR(MAX) = NULL OUTPUT  --description of resulting error, if one occurred
 )
 
 AS
@@ -13,13 +13,13 @@ AS
 	after processing in a clean-up method.
 */
 
-BEGIN TRY
-	DECLARE @filetypeid SMALLINT = 2 --hard code file type; one proc, one type
-	DECLARE @dir VARCHAR(200)
-	DECLARE @cmd VARCHAR(500)
-	DECLARE @fhid INT
-	DECLARE @err_ct INT
+DECLARE @filetypeid SMALLINT = 2 --hard code file type; one proc, one type
+DECLARE @dir VARCHAR(200)
+DECLARE @cmd VARCHAR(500)
+DECLARE @fhid INT
+DECLARE @err_ct INT
 
+BEGIN TRY
 	--confirm the file hasn't been processed before; assume it has if there is an entry with 0 errors in the history
 	IF EXISTS (SELECT FileID FROM dbo.FileHistory WHERE FileTypeID = @filetypeid AND Filename = @piFileName AND Errors = 0)
 	BEGIN
@@ -31,7 +31,7 @@ BEGIN TRY
 	--reaching here means file hasn't been processed before, continue
 	SET @dir = dbo.GetSettingValue('FileProcessing Directory')
 	IF RIGHT(@dir, 1) <> '\' SET @dir = @dir + '\'
-	SET @dir = @dir + @@SERVERNAME + '\Import\LichessEvaluations\'
+	SET @dir = @dir + 'Import\' + (SELECT REPLACE(FileType, ' ', '') FROM dbo.FileTypes WHERE FileTypeID = @filetypeid) + '\'
 
 	EXEC dbo.DeleteStagedLichessEvaluations @errors = 0
 	TRUNCATE TABLE lake.LichessEvaluations
@@ -62,7 +62,7 @@ BEGIN TRY
 	EXEC dbo.DeleteStagedLichessEvaluations @errors = @err_ct
 
 	UPDATE dbo.FileHistory
-	SET DateCompleted = GETDATE(), Errors = @err_ct
+	SET DateCompleted = GETDATE(), Errors = @err_ct, ErrorMessage = @poErrorMessage
 	WHERE FileID = @fhid
 
 	IF @poErrorMessage IS NOT NULL
@@ -76,6 +76,13 @@ END TRY
 
 BEGIN CATCH
 	SET @poErrorMessage = '[' + CAST(ERROR_LINE() AS VARCHAR) + '] ' + ERROR_MESSAGE()
+	IF @fhid IS NOT NULL
+	BEGIN
+		UPDATE dbo.FileHistory
+		SET DateCompleted = GETDATE(), Errors = ISNULL(NULLIF(@err_ct, 0), -1), ErrorMessage = @poErrorMessage
+		WHERE FileID = @fhid
+	END
+
 	--;THROW 50000, @poErrorMessage, 1
 	RETURN -1
 END CATCH
