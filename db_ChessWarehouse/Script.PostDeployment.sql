@@ -70,7 +70,7 @@ ALTER ROLE [db_backupoperator] ADD MEMBER [job_owner]
 SET IDENTITY_INSERT dbo.FileTypes ON
 
 INSERT INTO dbo.FileTypes (FileTypeID, FileType, FileExtension)
-SELECT '1', 'Python Analysis', 'game'
+SELECT '1', 'Chess Game Analysis', 'game'
 WHERE NOT EXISTS (SELECT FileTypeID FROM dbo.FileTypes WHERE FileTypeID = '1')
 
 INSERT INTO dbo.FileTypes (FileTypeID, FileType, FileExtension)
@@ -96,11 +96,11 @@ SELECT 3, 'Max Eval', '3', 'The maximum T1 and move evaluation included in calcu
 WHERE NOT EXISTS (SELECT ID FROM dbo.Settings WHERE ID = 3)
 
 INSERT INTO dbo.Settings (ID, Name, Value, Description)
-SELECT 4, 'Import Directory', NULL, 'General import file location'
+SELECT 4, 'Import Directory', 'C:\FileProcessing\Import', 'General import file location'
 WHERE NOT EXISTS (SELECT ID FROM dbo.Settings WHERE ID = 4)
 
 INSERT INTO dbo.Settings (ID, Name, Value, Description)
-SELECT 5, 'Export Directory', NULL, 'General export file location'
+SELECT 5, 'Export Directory', 'C:\FileProcessing\Export', 'General export file location'
 WHERE NOT EXISTS (SELECT ID FROM dbo.Settings WHERE ID = 5)
 
 INSERT INTO dbo.Settings (ID, Name, Value, Description)
@@ -120,7 +120,7 @@ SELECT 9, 'Default Score', '1', 'The default ScoreID value for fact tables'
 WHERE NOT EXISTS (SELECT ID FROM dbo.Settings WHERE ID = 9)
 
 INSERT INTO dbo.Settings (ID, Name, Value, Description)
-SELECT 10, 'FileProcessing Directory', '\\fs01\FileShare\FileProcessing', 'File processing root directory'
+SELECT 10, 'FileProcessing Directory', 'C:\FileProcessing', 'File processing root directory'
 WHERE NOT EXISTS (SELECT ID FROM dbo.Settings WHERE ID = 10)
 
 INSERT INTO dbo.Settings (ID, Name, Value, Description)
@@ -2550,10 +2550,6 @@ INSERT INTO dim.Sources (SourceID, SourceName, PersonalFlag)
 SELECT '4', 'Lichess', 0
 WHERE NOT EXISTS (SELECT SourceID FROM dim.Sources WHERE SourceID = '4')
 
-INSERT INTO dim.Sources (SourceID, SourceName, PersonalFlag)
-SELECT '5', 'Cheaters', 0
-WHERE NOT EXISTS (SELECT SourceID FROM dim.Sources WHERE SourceID = '5')
-
 SET IDENTITY_INSERT dim.Sources OFF
 
 
@@ -2696,6 +2692,10 @@ WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE R
 INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
 SELECT 'G', '17', 'Result'
 WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '17')
+
+INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
+SELECT 'G', '18', 'Event Rated'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '18')
 
 INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
 SELECT 'M', '1', 'Record Key'

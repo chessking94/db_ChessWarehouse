@@ -21,6 +21,7 @@ INSERT INTO stage.Games (
 	EventName,
 	RoundNum,
 	Result,
+	EventRated,
 	FileID
 )
 
@@ -41,6 +42,7 @@ Field13 AS GameTime,
 Field14 AS EventName,
 Field15 AS RoundNum,
 Field16 AS Result,
+Field17 AS EventRated,
 @fileid AS FileID
 
 FROM stage.BulkInsertGameData

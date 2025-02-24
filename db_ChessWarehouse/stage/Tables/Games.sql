@@ -18,6 +18,7 @@
     [EventName]         VARCHAR (100) NULL,
     [RoundNum]          VARCHAR (7)   NULL,
     [Result]            CHAR (3)      NULL,
+    [EventRated]        BIT           NULL,
     [FileID]            INT           NULL
 );
 

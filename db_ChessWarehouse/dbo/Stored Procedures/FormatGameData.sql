@@ -2,6 +2,7 @@
 
 AS
 
+--general updates
 UPDATE g
 SET g.SiteName = s.SiteID
 FROM stage.Games g
@@ -21,6 +22,12 @@ UPDATE g
 SET g.RoundNum = CASE WHEN LEFT(g.RoundNum, 1) LIKE '[1-9]' THEN FLOOR(CAST(g.RoundNum AS float)) ELSE NULL END
 FROM stage.Games g
 
+UPDATE g
+SET g.EventRated = 1
+FROM stage.Games g
+WHERE g.EventRated IS NULL OR g.EventRated NOT IN ('0', '1')
+
+--errors
 UPDATE g
 SET g.SourceName = s.SourceID, g.Errors = (CASE WHEN s.SourceID IS NULL THEN 'SourceName' ELSE NULL END)
 FROM stage.Games g
