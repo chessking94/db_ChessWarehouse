@@ -216,10 +216,11 @@
     <Build Include="Security\Roles\db_executor.sql" />
   </ItemGroup>
   <ItemGroup>
-    <PostDeploy Include="Script.PostDeployment.sql" />
-    <None Include="Script.PostDeployment_Job_RecalculateFactTables.sql" />
-    <None Include="Script.PostDeployment_Job_RecalculateMoveScores.sql" />
-    <None Include="Script.PostDeployment_Job_RecalculateZScores.sql" />
+    <PostDeploy Include="PostDeployment.sql" />
+    <None Include="Job_RecalculateFactTables.sql" />
+    <None Include="Job_RecalculateMoveScores.sql" />
+    <None Include="Job_RecalculateZScores.sql" />
+    <None Include="Job_UpdateRptTables.sql" />
   </ItemGroup>
   <ItemGroup>
     <ArtifactReference Include="$(DacPacRootPath)\Extensions\Microsoft\SQLDB\Extensions\SqlServer\160\SqlSchemas\master.dacpac">
