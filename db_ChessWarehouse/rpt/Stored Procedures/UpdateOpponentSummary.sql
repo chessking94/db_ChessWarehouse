@@ -3,7 +3,7 @@
 AS
 
 BEGIN
-	DELETE FROM rpt.OpponentSummary
+	TRUNCATE TABLE rpt.OpponentSummary
 
 	INSERT INTO rpt.OpponentSummary (
 		SourceName
@@ -44,5 +44,5 @@ BEGIN
 		,Me_Score
 		,Opp_Score
 
-	FROM rpt.OpponentSummary
+	FROM rpt.vwOpponentSummary
 END

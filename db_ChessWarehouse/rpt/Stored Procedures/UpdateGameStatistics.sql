@@ -3,7 +3,7 @@
 AS
 
 BEGIN
-	DELETE FROM rpt.GameStatistics
+	TRUNCATE TABLE rpt.GameStatistics
 
 	INSERT INTO rpt.GameStatistics (
 		Row_Count

@@ -3,7 +3,7 @@
 AS
 
 BEGIN
-	DELETE FROM rpt.RoundSummary
+	TRUNCATE TABLE rpt.RoundSummary
 
 	INSERT INTO rpt.RoundSummary (
 		SourceName
@@ -46,5 +46,5 @@ BEGIN
 		,Me_Score
 		,Opp_Score
 
-	FROM rpt.RoundSummary
+	FROM rpt.vwRoundSummary
 END

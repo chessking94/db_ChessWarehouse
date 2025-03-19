@@ -3,7 +3,7 @@
 AS
 
 BEGIN
-	DELETE FROM rpt.TimeControlSummary
+	TRUNCATE TABLE rpt.TimeControlSummary
 
 	INSERT INTO rpt.TimeControlSummary (
 		SourceName
@@ -48,5 +48,5 @@ BEGIN
 		,Me_Score
 		,Opp_Score
 
-	FROM rpt.TimeControlSummary
+	FROM rpt.vwTimeControlSummary
 END

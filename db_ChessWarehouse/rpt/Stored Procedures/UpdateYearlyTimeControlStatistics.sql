@@ -3,7 +3,7 @@
 AS
 
 BEGIN
-	DELETE FROM rpt.YearlyTimeControlStatistics
+	TRUNCATE TABLE rpt.YearlyTimeControlStatistics
 
 	INSERT INTO rpt.YearlyTimeControlStatistics (
 		SourceName
@@ -50,5 +50,5 @@ BEGIN
 		,Me_Score
 		,Opp_Score
 
-	FROM rpt.YearlyTimeControlStatistics
+	FROM rpt.vwYearlyTimeControlStatistics
 END

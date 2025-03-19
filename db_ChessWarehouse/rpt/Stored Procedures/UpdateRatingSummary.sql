@@ -3,7 +3,7 @@
 AS
 
 BEGIN
-	DELETE FROM rpt.RatingSummary
+	TRUNCATE TABLE rpt.RatingSummary
 
 	INSERT INTO rpt.RatingSummary (
 		SourceName
@@ -46,5 +46,5 @@ BEGIN
 		,Me_Score
 		,Opp_Score
 
-	FROM rpt.RatingSummary
+	FROM rpt.vwRatingSummary
 END

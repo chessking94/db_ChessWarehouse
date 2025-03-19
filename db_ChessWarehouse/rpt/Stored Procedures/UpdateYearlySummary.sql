@@ -3,7 +3,7 @@
 AS
 
 BEGIN
-	DELETE FROM rpt.YearlySummary
+	TRUNCATE TABLE rpt.YearlySummary
 
 	INSERT INTO rpt.YearlySummary (
 		SourceName
@@ -46,5 +46,5 @@ BEGIN
 		,Me_Score
 		,Opp_Score
 
-	FROM rpt.YearlySummary
+	FROM rpt.vwYearlySummary
 END

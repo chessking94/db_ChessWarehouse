@@ -3,7 +3,7 @@
 AS
 
 BEGIN
-	DELETE FROM rpt.EventSummary
+	TRUNCATE TABLE rpt.EventSummary
 
 	INSERT INTO rpt.EventSummary (
 		SourceName

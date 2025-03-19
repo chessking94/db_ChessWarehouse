@@ -3,7 +3,7 @@
 AS
 
 BEGIN
-	DELETE FROM rpt.YearlyTStatistics
+	TRUNCATE TABLE rpt.YearlyTStatistics
 
 	INSERT INTO rpt.YearlyTStatistics (
 		SourceName
@@ -42,5 +42,5 @@ BEGIN
 		,Opp_T4
 		,Opp_T5
 
-	FROM rpt.YearlyTStatistics
+	FROM rpt.vwYearlyTStatistics
 END

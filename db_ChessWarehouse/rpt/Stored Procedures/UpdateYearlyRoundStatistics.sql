@@ -3,7 +3,7 @@
 AS
 
 BEGIN
-	DELETE FROM rpt.YearlyRoundStatistics
+	TRUNCATE TABLE rpt.YearlyRoundStatistics
 
 	INSERT INTO rpt.YearlyRoundStatistics (
 		SourceName
@@ -48,5 +48,5 @@ BEGIN
 		,Me_Score
 		,Opp_Score
 
-	FROM rpt.YearlyRoundStatistics
+	FROM rpt.vwYearlyRoundStatistics
 END

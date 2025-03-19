@@ -3,7 +3,7 @@
 AS
 
 BEGIN
-	DELETE FROM rpt.ECOSummary
+	TRUNCATE TABLE rpt.ECOSummary
 
 	INSERT INTO rpt.ECOSummary (
 		ECO_Group
