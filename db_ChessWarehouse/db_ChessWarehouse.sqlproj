@@ -83,6 +83,8 @@
     <Folder Include="rpt\Views" />
     <Folder Include="Security\Schemas" />
     <Folder Include="Security\Roles" />
+    <Folder Include="rpt\Tables" />
+    <Folder Include="rpt\Stored Procedures" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dim\Tables\Colors.sql" />
@@ -214,6 +216,28 @@
     <Build Include="Security\Schemas\stage.sql" />
     <Build Include="Security\Schemas\stat.sql" />
     <Build Include="Security\Roles\db_executor.sql" />
+    <Build Include="rpt\Tables\ECOSummary.sql" />
+    <Build Include="rpt\Tables\EventSummary.sql" />
+    <Build Include="rpt\Tables\GameStatistics.sql" />
+    <Build Include="rpt\Tables\OpponentSummary.sql" />
+    <Build Include="rpt\Tables\RatingSummary.sql" />
+    <Build Include="rpt\Tables\RoundSummary.sql" />
+    <Build Include="rpt\Tables\TimeControlSummary.sql" />
+    <Build Include="rpt\Tables\YearlyRoundStatistics.sql" />
+    <Build Include="rpt\Tables\YearlySummary.sql" />
+    <Build Include="rpt\Tables\YearlyTimeControlStatistics.sql" />
+    <Build Include="rpt\Tables\YearlyTStatistics.sql" />
+    <Build Include="rpt\Stored Procedures\UpdateECOSummary.sql" />
+    <Build Include="rpt\Stored Procedures\UpdateEventSummary.sql" />
+    <Build Include="rpt\Stored Procedures\UpdateGameStatistics.sql" />
+    <Build Include="rpt\Stored Procedures\UpdateOpponentSummary.sql" />
+    <Build Include="rpt\Stored Procedures\UpdateRatingSummary.sql" />
+    <Build Include="rpt\Stored Procedures\UpdateRoundSummary.sql" />
+    <Build Include="rpt\Stored Procedures\UpdateTimeControlSummary.sql" />
+    <Build Include="rpt\Stored Procedures\UpdateYearlyRoundStatistics.sql" />
+    <Build Include="rpt\Stored Procedures\UpdateYearlySummary.sql" />
+    <Build Include="rpt\Stored Procedures\UpdateYearlyTimeControlStatistics.sql" />
+    <Build Include="rpt\Stored Procedures\UpdateYearlyTStatistics.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment.sql" />
