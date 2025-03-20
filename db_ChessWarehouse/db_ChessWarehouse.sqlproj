@@ -238,6 +238,8 @@
     <Build Include="rpt\Stored Procedures\UpdateYearlySummary.sql" />
     <Build Include="rpt\Stored Procedures\UpdateYearlyTimeControlStatistics.sql" />
     <Build Include="rpt\Stored Procedures\UpdateYearlyTStatistics.sql" />
+    <Build Include="rpt\Tables\GameSummary.sql" />
+    <Build Include="rpt\Stored Procedures\UpdateGameSummary.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment.sql" />

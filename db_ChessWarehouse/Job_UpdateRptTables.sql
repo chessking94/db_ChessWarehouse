@@ -86,8 +86,26 @@ BEGIN
 
 		EXEC @ReturnCode = msdb.dbo.sp_add_jobstep
 			@job_id = @jobId,
-			@step_name = N'OpponentSummary',
+			@step_name = N'GameSummary',
 			@step_id = 4,
+			@cmdexec_success_code = 0,
+			@on_success_action = 3,
+			@on_success_step_id = 0,
+			@on_fail_action = 2,
+			@on_fail_step_id = 0,
+			@retry_attempts = 0,
+			@retry_interval = 0,
+			@os_run_priority = 0,
+			@subsystem = N'TSQL',
+			@command = N'EXEC rpt.UpdateGameSummary',
+			@database_name = N'ChessWarehouse',
+			@flags = 0
+		IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback
+
+		EXEC @ReturnCode = msdb.dbo.sp_add_jobstep
+			@job_id = @jobId,
+			@step_name = N'OpponentSummary',
+			@step_id = 5,
 			@cmdexec_success_code = 0,
 			@on_success_action = 3,
 			@on_success_step_id = 0,
@@ -105,7 +123,7 @@ BEGIN
 		EXEC @ReturnCode = msdb.dbo.sp_add_jobstep
 			@job_id = @jobId,
 			@step_name = N'RatingSummary',
-			@step_id = 5,
+			@step_id = 6,
 			@cmdexec_success_code = 0,
 			@on_success_action = 3,
 			@on_success_step_id = 0,
@@ -123,7 +141,7 @@ BEGIN
 		EXEC @ReturnCode = msdb.dbo.sp_add_jobstep
 			@job_id = @jobId,
 			@step_name = N'RoundSummary',
-			@step_id = 6,
+			@step_id = 7,
 			@cmdexec_success_code = 0,
 			@on_success_action = 3,
 			@on_success_step_id = 0,
@@ -141,7 +159,7 @@ BEGIN
 		EXEC @ReturnCode = msdb.dbo.sp_add_jobstep
 			@job_id = @jobId,
 			@step_name = N'TimeControlSummary',
-			@step_id = 7,
+			@step_id = 8,
 			@cmdexec_success_code = 0,
 			@on_success_action = 3,
 			@on_success_step_id = 0,
@@ -159,7 +177,7 @@ BEGIN
 		EXEC @ReturnCode = msdb.dbo.sp_add_jobstep
 			@job_id = @jobId,
 			@step_name = N'YearlyRoundStatistics',
-			@step_id = 8,
+			@step_id = 9,
 			@cmdexec_success_code = 0,
 			@on_success_action = 3,
 			@on_success_step_id = 0,
@@ -177,7 +195,7 @@ BEGIN
 		EXEC @ReturnCode = msdb.dbo.sp_add_jobstep
 			@job_id = @jobId,
 			@step_name = N'YearlySummary',
-			@step_id = 9,
+			@step_id = 10,
 			@cmdexec_success_code = 0,
 			@on_success_action = 3,
 			@on_success_step_id = 0,
@@ -195,7 +213,7 @@ BEGIN
 		EXEC @ReturnCode = msdb.dbo.sp_add_jobstep
 			@job_id = @jobId,
 			@step_name = N'YearlyTimeControlStatistics',
-			@step_id = 10,
+			@step_id = 11,
 			@cmdexec_success_code = 0,
 			@on_success_action = 3,
 			@on_success_step_id = 0,
@@ -213,7 +231,7 @@ BEGIN
 		EXEC @ReturnCode = msdb.dbo.sp_add_jobstep
 			@job_id = @jobId,
 			@step_name = N'YearlyTStatistics',
-			@step_id = 11,
+			@step_id = 12,
 			@cmdexec_success_code = 0,
 			@on_success_action = 1,
 			@on_success_step_id = 0,
