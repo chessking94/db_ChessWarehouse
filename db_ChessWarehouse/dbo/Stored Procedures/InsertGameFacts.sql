@@ -1,9 +1,26 @@
-﻿CREATE PROCEDURE [dbo].[InsertGameFacts]
+﻿CREATE PROCEDURE [dbo].[InsertGameFacts] (
+	@piFileID INT = NULL
+)
 
 AS
 
 --fact.Game
-DELETE FROM fact.Game
+CREATE TABLE #Games (GameID INT)
+	
+INSERT INTO #Games
+SELECT GameID FROM lake.Games WHERE FileID = @piFileID
+
+IF @piFileID IS NULL
+BEGIN
+	DELETE FROM fact.Game
+END
+
+ELSE
+BEGIN
+	DELETE fg
+	FROM fact.Game fg
+	JOIN #Games g ON fg.GameID = g.GameID
+END
 
 INSERT INTO fact.Game (
 	SourceID,
@@ -74,6 +91,8 @@ LEFT JOIN dim.CPLossGroups cp ON
 	m.CP_Loss >= cp.LBound
 	AND m.CP_Loss <= cp.UBound
 
+WHERE (ISNULL(@piFileID, -1) = -1 OR g.GameID IN (SELECT GameID FROM #Games))
+
 GROUP BY
 g.SourceID,
 g.GameID,
@@ -107,8 +126,13 @@ JOIN stat.MoveScores ms ON
 JOIN lake.Games g ON
 	m.GameID = g.GameID
 
+WHERE (ISNULL(@piFileID, -1) = -1 OR g.GameID IN (SELECT GameID FROM #Games))
+
 GROUP BY
 g.SourceID,
 g.GameID,
 m.ColorID,
 ms.ScoreID
+
+
+DROP TABLE #Games

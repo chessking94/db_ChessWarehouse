@@ -178,7 +178,6 @@
     <Build Include="dbo\Stored Procedures\InsertNewMoves.sql" />
     <Build Include="dbo\Stored Procedures\UpdateMoveTracesAll.sql" />
     <Build Include="dbo\Stored Procedures\LoadGameData.sql" />
-    <Build Include="dbo\Stored Procedures\InsertGameFactsNew.sql" />
     <Build Include="dbo\Stored Procedures\PurgeSchemas.sql" />
     <Build Include="dbo\Stored Procedures\DupCheckStagedGames.sql" />
     <Build Include="dbo\Stored Procedures\UpdateMoveScores_ScoreID_1.sql" />
@@ -240,6 +239,7 @@
     <Build Include="rpt\Stored Procedures\UpdateYearlyTStatistics.sql" />
     <Build Include="rpt\Tables\GameSummary.sql" />
     <Build Include="rpt\Stored Procedures\UpdateGameSummary.sql" />
+    <Build Include="dbo\Stored Procedures\UpdateFactTables.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment.sql" />

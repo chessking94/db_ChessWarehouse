@@ -1,9 +1,27 @@
-﻿CREATE PROCEDURE [dbo].[InsertEventFacts]
+﻿CREATE PROCEDURE [dbo].[InsertEventFacts] (
+	@piFileID INT = NULL
+)
 
 AS
 
 --fact.Event
-DELETE FROM fact.Event
+CREATE TABLE #Events (EventID INT)
+	
+INSERT INTO #Events
+SELECT DISTINCT eventID FROM lake.Games WHERE FileID = @piFileID
+
+IF @piFileID IS NULL
+BEGIN
+	DELETE FROM fact.Event
+END
+
+ELSE
+BEGIN
+	DELETE fe
+	FROM fact.Event fe
+	JOIN #Events e ON fe.EventID = e.EventID
+END
+
 
 INSERT INTO fact.Event (
 	EventID,
@@ -70,11 +88,14 @@ JOIN dim.Colors c ON
 JOIN dim.Ratings r ON
 	(CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) >= r.RatingID
 	AND (CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) <= r.RatingUpperBound
+JOIN dbo.FileHistory fh ON
+	g.FileID = fh.FileID
 LEFT JOIN dim.CPLossGroups cp ON
 	m.CP_Loss >= cp.LBound
 	AND m.CP_Loss <= cp.UBound
 
 WHERE g.SourceID NOT IN (2, 4)
+AND (ISNULL(@piFileID, -1) = -1 OR g.EventID IN (SELECT EventID FROM #Events))
 
 GROUP BY
 g.EventID,
@@ -113,8 +134,11 @@ JOIN dim.TimeControlDetail td ON
 	g.TimeControlDetailID = td.TimeControlDetailID
 JOIN dim.Colors c ON
 	m.ColorID = c.ColorID
+JOIN dbo.FileHistory fh ON
+	g.FileID = fh.FileID
 
 WHERE g.SourceID NOT IN (2, 4)
+AND (ISNULL(@piFileID, -1) = -1 OR g.EventID IN (SELECT EventID FROM #Events))
 
 GROUP BY
 g.EventID,
@@ -122,3 +146,6 @@ g.SourceID,
 td.TimeControlID,
 CASE WHEN c.Color = 'White' THEN g.WhitePlayerID ELSE g.BlackPlayerID END,
 ms.ScoreID
+
+
+DROP TABLE #Events
