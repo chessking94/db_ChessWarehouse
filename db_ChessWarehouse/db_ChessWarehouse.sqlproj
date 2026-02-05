@@ -240,6 +240,10 @@
     <Build Include="rpt\Tables\GameSummary.sql" />
     <Build Include="rpt\Stored Procedures\UpdateGameSummary.sql" />
     <Build Include="dbo\Stored Procedures\UpdateFactTables.sql" />
+    <Build Include="dbo\Stored Procedures\LoadUnanalyzedGameData.sql" />
+    <Build Include="dbo\Stored Procedures\StageUnanalyzedMoves.sql" />
+    <Build Include="stage\Tables\BulkInsertUnanalyzedGames.sql" />
+    <Build Include="dim\Tables\AnalysisStatus.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment.sql" />

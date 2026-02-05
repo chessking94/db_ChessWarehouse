@@ -1,4 +1,6 @@
-﻿CREATE PROCEDURE [dbo].[InsertNewGames]
+﻿CREATE PROCEDURE [dbo].[InsertNewGames] (
+	@AnalysisStatusID TINYINT
+)
 
 AS
 
@@ -17,7 +19,8 @@ INSERT INTO lake.Games (
 	EventID,
 	RoundNum,
 	Result,
-	FileID
+	FileID,
+	AnalysisStatusID
 )
 
 SELECT
@@ -35,6 +38,7 @@ GameTime,
 EventName AS EventID,
 RoundNum,
 Result,
-FileID
+FileID,
+@AnalysisStatusID AS AnalysisStatusID
 
 FROM stage.Games

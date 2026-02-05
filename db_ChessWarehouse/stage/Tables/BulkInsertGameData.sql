@@ -78,7 +78,6 @@
     [Field76]   VARCHAR (8)   NULL,
     [Field77]   VARCHAR (8)   NULL,
     [Field78]   VARCHAR (8)   NULL,
-    [Field79]   VARCHAR (8)   NULL,
-    CONSTRAINT [FK_BulkInsertGameData_RecordKey] FOREIGN KEY ([RecordKey]) REFERENCES [doc].[Records] ([RecordKey])
+    [Field79]   VARCHAR (8)   NULL
 );
 

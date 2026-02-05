@@ -77,6 +77,10 @@ INSERT INTO dbo.FileTypes (FileTypeID, FileType, FileExtension)
 SELECT '2', 'Lichess Evaluations', 'lieval'
 WHERE NOT EXISTS (SELECT FileTypeID FROM dbo.FileTypes WHERE FileTypeID = '2')
 
+INSERT INTO dbo.FileTypes (FileTypeID, FileType, FileExtension)
+SELECT '3', 'Unanalyzed Chess Games', 'game2'
+WHERE NOT EXISTS (SELECT FileTypeID FROM dbo.FileTypes WHERE FileTypeID = '3')
+
 SET IDENTITY_INSERT dbo.FileTypes OFF
 
 
@@ -147,6 +151,28 @@ SELECT '3', 'Evaluation'
 WHERE NOT EXISTS (SELECT AggregationID FROM dim.Aggregations WHERE AggregationID = '3')
 
 SET IDENTITY_INSERT dim.Aggregations OFF
+
+
+----Table: AnalysisStatus
+SET IDENTITY_INSERT dim.AnalysisStatus ON
+
+INSERT INTO dim.AnalysisStatus (AnalysisStatusID, AnalysisStatusName)
+SELECT '0', 'Error'
+WHERE NOT EXISTS (SELECT AnalysisStatusID FROM dim.AnalysisStatus WHERE AnalysisStatusID = '0')
+
+INSERT INTO dim.AnalysisStatus (AnalysisStatusID, AnalysisStatusName)
+SELECT '1', 'Pending'
+WHERE NOT EXISTS (SELECT AnalysisStatusID FROM dim.AnalysisStatus WHERE AnalysisStatusID = '1')
+
+INSERT INTO dim.AnalysisStatus (AnalysisStatusID, AnalysisStatusName)
+SELECT '2', 'In Progress'
+WHERE NOT EXISTS (SELECT AnalysisStatusID FROM dim.AnalysisStatus WHERE AnalysisStatusID = '2')
+
+INSERT INTO dim.AnalysisStatus (AnalysisStatusID, AnalysisStatusName)
+SELECT '3', 'Complete'
+WHERE NOT EXISTS (SELECT AnalysisStatusID FROM dim.AnalysisStatus WHERE AnalysisStatusID = '3')
+
+SET IDENTITY_INSERT dim.AnalysisStatus OFF
 
 
 ----Table: Colors
@@ -2534,20 +2560,20 @@ SET IDENTITY_INSERT dim.Sites OFF
 ----Table: Sources
 SET IDENTITY_INSERT dim.Sources ON
 
-INSERT INTO dim.Sources (SourceID, SourceName, PersonalFlag)
-SELECT '1', 'Personal', 1
+INSERT INTO dim.Sources (SourceID, SourceName, PersonalFlag, AnalysisDepth, UseOpeningExplorer, UseTablebase, MovesToAnalyze)
+SELECT '1', 'Personal', 1, 15, 1, 1, 32
 WHERE NOT EXISTS (SELECT SourceID FROM dim.Sources WHERE SourceID = '1')
 
-INSERT INTO dim.Sources (SourceID, SourceName, PersonalFlag)
-SELECT '2', 'PersonalOnline', 1
+INSERT INTO dim.Sources (SourceID, SourceName, PersonalFlag, AnalysisDepth, UseOpeningExplorer, UseTablebase, MovesToAnalyze)
+SELECT '2', 'PersonalOnline', 1, 11, 1, 1, 32
 WHERE NOT EXISTS (SELECT SourceID FROM dim.Sources WHERE SourceID = '2')
 
-INSERT INTO dim.Sources (SourceID, SourceName, PersonalFlag)
-SELECT '3', 'Control', 0
+INSERT INTO dim.Sources (SourceID, SourceName, PersonalFlag, AnalysisDepth, UseOpeningExplorer, UseTablebase, MovesToAnalyze)
+SELECT '3', 'Control', 0, 11, 1, 1, 32
 WHERE NOT EXISTS (SELECT SourceID FROM dim.Sources WHERE SourceID = '3')
 
-INSERT INTO dim.Sources (SourceID, SourceName, PersonalFlag)
-SELECT '4', 'Lichess', 0
+INSERT INTO dim.Sources (SourceID, SourceName, PersonalFlag, AnalysisDepth, UseOpeningExplorer, UseTablebase, MovesToAnalyze)
+SELECT '4', 'Lichess', 0, 11, 0, 0, 5
 WHERE NOT EXISTS (SELECT SourceID FROM dim.Sources WHERE SourceID = '4')
 
 SET IDENTITY_INSERT dim.Sources OFF
@@ -2585,437 +2611,553 @@ SET IDENTITY_INSERT dim.TimeControls OFF
 
 ----Table: Traces
 INSERT INTO dim.Traces (TraceKey, TraceDescription, Scored)
-SELECT '0', 'Inferior Move', 'True'
+SELECT '0', 'Inferior Move', 1
 WHERE NOT EXISTS (SELECT TraceKey FROM dim.Traces WHERE TraceKey = '0')
 
 INSERT INTO dim.Traces (TraceKey, TraceDescription, Scored)
-SELECT 'b', 'Book Move', 'False'
+SELECT 'b', 'Book Move', 0
 WHERE NOT EXISTS (SELECT TraceKey FROM dim.Traces WHERE TraceKey = 'b')
 
 INSERT INTO dim.Traces (TraceKey, TraceDescription, Scored)
-SELECT 'e', 'Eliminated Move', 'False'
+SELECT 'e', 'Eliminated Move', 0
 WHERE NOT EXISTS (SELECT TraceKey FROM dim.Traces WHERE TraceKey = 'e')
 
 INSERT INTO dim.Traces (TraceKey, TraceDescription, Scored)
-SELECT 'f', 'Forced Move', 'False'
+SELECT 'f', 'Forced Move', 0
 WHERE NOT EXISTS (SELECT TraceKey FROM dim.Traces WHERE TraceKey = 'f')
 
 INSERT INTO dim.Traces (TraceKey, TraceDescription, Scored)
-SELECT 'M', 'Equal Value Match Move', 'True'
+SELECT 'M', 'Equal Value Match Move', 1
 WHERE NOT EXISTS (SELECT TraceKey FROM dim.Traces WHERE TraceKey = 'M')
 
 INSERT INTO dim.Traces (TraceKey, TraceDescription, Scored)
-SELECT 'r', 'Repeated Move', 'False'
+SELECT 'r', 'Repeated Move', 0
 WHERE NOT EXISTS (SELECT TraceKey FROM dim.Traces WHERE TraceKey = 'r')
 
 INSERT INTO dim.Traces (TraceKey, TraceDescription, Scored)
-SELECT 't', 'Tablebase Move', 'False'
+SELECT 't', 'Tablebase Move', 0
 WHERE NOT EXISTS (SELECT TraceKey FROM dim.Traces WHERE TraceKey = 't')
 
 
 --Schema: doc
 ----Table: Records
-INSERT INTO doc.Records (RecordKey, RecordName)
-SELECT 'G', 'Games'
-WHERE NOT EXISTS (SELECT RecordKey FROM doc.Records WHERE RecordKey = 'G')
+INSERT INTO doc.Records (FileTypeID, RecordKey, RecordName)
+SELECT 1, 'G', 'Games'
+WHERE NOT EXISTS (SELECT RecordKey FROM doc.Records WHERE FileTypeID = 1 AND RecordKey = 'G')
 
-INSERT INTO doc.Records (RecordKey, RecordName)
-SELECT 'M', 'Moves'
-WHERE NOT EXISTS (SELECT RecordKey FROM doc.Records WHERE RecordKey = 'M')
+INSERT INTO doc.Records (FileTypeID, RecordKey, RecordName)
+SELECT 1, 'M', 'Moves'
+WHERE NOT EXISTS (SELECT RecordKey FROM doc.Records WHERE FileTypeID = 1 AND RecordKey = 'M')
+
+INSERT INTO doc.Records (FileTypeID, RecordKey, RecordName)
+SELECT 3, 'G', 'Games'
+WHERE NOT EXISTS (SELECT RecordKey FROM doc.Records WHERE FileTypeID = 3 AND RecordKey = 'M')
+
+INSERT INTO doc.Records (FileTypeID, RecordKey, RecordName)
+SELECT 3, 'M', 'Moves'
+WHERE NOT EXISTS (SELECT RecordKey FROM doc.Records WHERE FileTypeID = 3 AND RecordKey = 'M')
 
 
 ----Table: RecordLayouts -> dependent on doc.Records
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '1', 'Record ID'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '1')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '2', 'Source Name'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '2')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '3', 'Site Name'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '3')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '4', 'Game ID'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '4')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '5', 'White Last Name'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '5')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '6', 'White First Name'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '6')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '7', 'Black Last Name'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '7')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '8', 'Black First Name'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '8')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '9', 'White Elo Rating'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '9')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '10', 'Black Elo Rating'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '10')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '11', 'Time Control'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '11')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '12', 'ECO Code'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '12')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '13', 'Game Date'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '13')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '14', 'Game Time'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '14')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '15', 'Event Name'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '15')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '16', 'Round Number'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '16')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '17', 'Result'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '17')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'G', '18', 'Event Rated'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'G' AND FieldPosition = '18')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '1', 'Record Key'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '1')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '2', 'Game ID'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '2')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '3', 'Move Number'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '3')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '4', 'Color'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '4')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '5', 'Is Theory'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '5')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '6', 'Is Tablebase'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '6')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '7', 'Engine'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '7')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '8', 'Depth'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '8')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '9', 'Clock'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '9')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '10', 'Time Spent'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '10')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '11', 'FEN'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '11')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '12', 'Phase ID'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '12')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '13', 'Move Played'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '13')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '14', 'Move Played Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '14')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '15', 'Move Played Rank'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '15')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '16', 'Centipawn Loss'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '16')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '17', 'Engine Move #1'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '17')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '18', 'Engine Move #1 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '18')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '19', 'Engine Move #2'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '19')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '20', 'Engine Move #2 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '20')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '21', 'Engine Move #3'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '21')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '22', 'Engine Move #3 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '22')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '23', 'Engine Move #4'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '23')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '24', 'Engine Move #4 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '24')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '25', 'Engine Move #5'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '25')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '26', 'Engine Move #5 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '26')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '27', 'Engine Move #6'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '27')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '28', 'Engine Move #6 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '28')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '29', 'Engine Move #7'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '29')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '30', 'Engine Move #7 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '30')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '31', 'Engine Move #8'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '31')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '32', 'Engine Move #8 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '32')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '33', 'Engine Move #9'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '33')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '34', 'Engine Move #9 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '34')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '35', 'Engine Move #10'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '35')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '36', 'Engine Move #10 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '36')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '37', 'Engine Move #11'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '37')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '38', 'Engine Move #11 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '38')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '39', 'Engine Move #12'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '39')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '40', 'Engine Move #12 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '40')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '41', 'Engine Move #13'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '41')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '42', 'Engine Move #13 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '42')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '43', 'Engine Move #14'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '43')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '44', 'Engine Move #14 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '44')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '45', 'Engine Move #15'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '45')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '46', 'Engine Move #15 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '46')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '47', 'Engine Move #16'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '47')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '48', 'Engine Move #16 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '48')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '49', 'Engine Move #17'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '49')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '50', 'Engine Move #17 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '50')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '51', 'Engine Move #18'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '51')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '52', 'Engine Move #18 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '52')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '53', 'Engine Move #19'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '53')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '54', 'Engine Move #19 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '54')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '55', 'Engine Move #20'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '55')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '56', 'Engine Move #20 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '56')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '57', 'Engine Move #21'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '57')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '58', 'Engine Move #21 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '58')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '59', 'Engine Move #22'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '59')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '60', 'Engine Move #22 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '60')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '61', 'Engine Move #23'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '61')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '62', 'Engine Move #23 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '62')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '63', 'Engine Move #24'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '63')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '64', 'Engine Move #24 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '64')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '65', 'Engine Move #25'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '65')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '66', 'Engine Move #25 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '66')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '67', 'Engine Move #26'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '67')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '68', 'Engine Move #26 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '68')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '69', 'Engine Move #27'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '69')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '70', 'Engine Move #27 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '70')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '71', 'Engine Move #28'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '71')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '72', 'Engine Move #28 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '72')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '73', 'Engine Move #29'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '73')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '74', 'Engine Move #29 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '74')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '75', 'Engine Move #30'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '75')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '76', 'Engine Move #30 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '76')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '77', 'Engine Move #31'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '77')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '78', 'Engine Move #31 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '78')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '79', 'Engine Move #32'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '79')
-
-INSERT INTO doc.RecordLayouts (RecordKey, FieldPosition, FieldName)
-SELECT 'M', '80', 'Engine Move #32 Evaluation'
-WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE RecordKey = 'M' AND FieldPosition = '80')
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '1', 'Record ID'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '1')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '2', 'Source Name'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '2')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '3', 'Site Name'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '3')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '4', 'Game ID'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '4')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '5', 'White Last Name'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '5')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '6', 'White First Name'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '6')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '7', 'Black Last Name'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '7')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '8', 'Black First Name'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '8')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '9', 'White Elo Rating'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '9')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '10', 'Black Elo Rating'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '10')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '11', 'Time Control'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '11')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '12', 'ECO Code'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '12')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '13', 'Game Date'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '13')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '14', 'Game Time'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '14')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '15', 'Event Name'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '15')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '16', 'Round Number'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '16')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '17', 'Result'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '17')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'G', '18', 'Event Rated'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'G' AND FieldPosition = '18')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '1', 'Record Key'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '1')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '2', 'Game ID'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '2')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '3', 'Move Number'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '3')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '4', 'Color'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '4')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '5', 'Is Theory'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '5')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '6', 'Is Tablebase'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '6')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '7', 'Engine'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '7')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '8', 'Depth'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '8')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '9', 'Clock'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '9')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '10', 'Time Spent'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '10')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '11', 'FEN'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '11')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '12', 'Phase ID'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '12')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '13', 'Move Played'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '13')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '14', 'Move Played Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '14')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '15', 'Move Played Rank'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '15')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '16', 'Centipawn Loss'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '16')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '17', 'Engine Move #1'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '17')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '18', 'Engine Move #1 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '18')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '19', 'Engine Move #2'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '19')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '20', 'Engine Move #2 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '20')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '21', 'Engine Move #3'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '21')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '22', 'Engine Move #3 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '22')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '23', 'Engine Move #4'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '23')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '24', 'Engine Move #4 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '24')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '25', 'Engine Move #5'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '25')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '26', 'Engine Move #5 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '26')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '27', 'Engine Move #6'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '27')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '28', 'Engine Move #6 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '28')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '29', 'Engine Move #7'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '29')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '30', 'Engine Move #7 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '30')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '31', 'Engine Move #8'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '31')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '32', 'Engine Move #8 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '32')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '33', 'Engine Move #9'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '33')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '34', 'Engine Move #9 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '34')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '35', 'Engine Move #10'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '35')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '36', 'Engine Move #10 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '36')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '37', 'Engine Move #11'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '37')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '38', 'Engine Move #11 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '38')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '39', 'Engine Move #12'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '39')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '40', 'Engine Move #12 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '40')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '41', 'Engine Move #13'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '41')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '42', 'Engine Move #13 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '42')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '43', 'Engine Move #14'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '43')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '44', 'Engine Move #14 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '44')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '45', 'Engine Move #15'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '45')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '46', 'Engine Move #15 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '46')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '47', 'Engine Move #16'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '47')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '48', 'Engine Move #16 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '48')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '49', 'Engine Move #17'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '49')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '50', 'Engine Move #17 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '50')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '51', 'Engine Move #18'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '51')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '52', 'Engine Move #18 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '52')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '53', 'Engine Move #19'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '53')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '54', 'Engine Move #19 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '54')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '55', 'Engine Move #20'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '55')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '56', 'Engine Move #20 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '56')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '57', 'Engine Move #21'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '57')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '58', 'Engine Move #21 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '58')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '59', 'Engine Move #22'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '59')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '60', 'Engine Move #22 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '60')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '61', 'Engine Move #23'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '61')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '62', 'Engine Move #23 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '62')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '63', 'Engine Move #24'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '63')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '64', 'Engine Move #24 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '64')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '65', 'Engine Move #25'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '65')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '66', 'Engine Move #25 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '66')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '67', 'Engine Move #26'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '67')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '68', 'Engine Move #26 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '68')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '69', 'Engine Move #27'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '69')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '70', 'Engine Move #27 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '70')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '71', 'Engine Move #28'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '71')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '72', 'Engine Move #28 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '72')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '73', 'Engine Move #29'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '73')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '74', 'Engine Move #29 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '74')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '75', 'Engine Move #30'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '75')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '76', 'Engine Move #30 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '76')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '77', 'Engine Move #31'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '77')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '78', 'Engine Move #31 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '78')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '79', 'Engine Move #32'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '79')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 1, 'M', '80', 'Engine Move #32 Evaluation'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 1 AND RecordKey = 'M' AND FieldPosition = '80')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '1', 'Record ID'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '1')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '2', 'Source Name'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '2')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '3', 'Site Name'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '3')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '4', 'Game ID'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '4')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '5', 'White Last Name'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '5')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '6', 'White First Name'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '6')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '7', 'Black Last Name'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '7')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '8', 'Black First Name'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '8')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '9', 'White Elo Rating'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '9')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '10', 'Black Elo Rating'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '10')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '11', 'Time Control'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '11')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '12', 'ECO Code'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '12')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '13', 'Game Date'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '13')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '14', 'Game Time'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '14')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '15', 'Event Name'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '15')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '16', 'Round Number'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '16')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '17', 'Result'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '17')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'G', '18', 'Event Rated'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'G' AND FieldPosition = '18')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'M', '1', 'Record Key'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'M' AND FieldPosition = '1')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'M', '2', 'Game ID'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'M' AND FieldPosition = '2')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'M', '3', 'Move Number'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'M' AND FieldPosition = '3')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'M', '4', 'Color'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'M' AND FieldPosition = '4')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'M', '5', 'Clock'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'M' AND FieldPosition = '5')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'M', '6', 'Time Spent'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'M' AND FieldPosition = '6')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'M', '7', 'FEN'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'M' AND FieldPosition = '7')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'M', '8', 'Phase ID'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'M' AND FieldPosition = '8')
+
+INSERT INTO doc.RecordLayouts (FileTypeID, RecordKey, FieldPosition, FieldName)
+SELECT 3, 'M', '9', 'Move Played'
+WHERE NOT EXISTS (SELECT RecordKey, FieldPosition FROM doc.RecordLayouts WHERE FileTypeID = 3 AND RecordKey = 'M' AND FieldPosition = '9')
 
 
 --Schema: stat

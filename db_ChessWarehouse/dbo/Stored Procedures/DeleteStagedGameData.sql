@@ -3,6 +3,7 @@
 AS
 
 TRUNCATE TABLE stage.BulkInsertGameData
+TRUNCATE TABLE stage.BulkInsertUnanalyzedGames
 TRUNCATE TABLE stage.Events
 TRUNCATE TABLE stage.Players
 TRUNCATE TABLE stage.TimeControlDetail

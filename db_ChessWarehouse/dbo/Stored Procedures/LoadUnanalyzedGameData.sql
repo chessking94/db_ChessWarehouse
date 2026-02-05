@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[LoadGameData] (
+﻿CREATE PROCEDURE [dbo].[LoadUnanalyzedGameData] (
 	@piFileName VARCHAR(100),  --the base name, i.e. MyFile.game
 	@poErrorMessage NVARCHAR(MAX) = NULL OUTPUT  --description of resulting error, if one occurred
 )
@@ -13,7 +13,7 @@ AS
 	after processing in a clean-up method.
 */
 
-DECLARE @filetypeid SMALLINT = 1 --hard code file type; one proc, one type
+DECLARE @filetypeid SMALLINT = 3 --hard code file type; one proc, one type
 DECLARE @dir VARCHAR(200)
 DECLARE @cmd VARCHAR(500)
 DECLARE @fhid INT
@@ -35,13 +35,13 @@ BEGIN TRY
 
 	EXEC dbo.DeleteStagedGameData @errors = 0
 
-	TRUNCATE TABLE stage.BulkInsertGameData
-	SET @cmd = 'BULK INSERT stage.BulkInsertGameData FROM ''' + @dir + @piFileName + ''' WITH (FIELDTERMINATOR = ''\t'', ROWTERMINATOR = ''\n'')'
+	TRUNCATE TABLE stage.BulkInsertUnanalyzedGames
+	SET @cmd = 'BULK INSERT stage.BulkInsertUnanalyzedGames FROM ''' + @dir + @piFileName + ''' WITH (FIELDTERMINATOR = ''\t'', ROWTERMINATOR = ''\n'')'
 	EXECUTE (@cmd)
 
 	--log file record
 	INSERT INTO dbo.FileHistory (FileTypeID, Filename, DateStarted, Records)
-	SELECT @filetypeid, @piFileName, GETDATE(), (SELECT COUNT(RecordKey) FROM stage.BulkInsertGameData)
+	SELECT @filetypeid, @piFileName, GETDATE(), (SELECT COUNT(RecordKey) FROM stage.BulkInsertUnanalyzedGames)
 
 	SET @fhid = @@IDENTITY
 
@@ -58,7 +58,7 @@ BEGIN TRY
 	IF @poErrorMessage IS NULL
 	BEGIN
 		--stage and preprocess move data
-		EXEC dbo.StageMoves
+		EXEC dbo.StageUnanalyzedMoves
 		EXEC dbo.FormatMoveData
 
 		SELECT @err_ct = COUNT(Errors) FROM stage.Moves WHERE Errors IS NOT NULL
@@ -76,16 +76,13 @@ BEGIN TRY
 			EXEC dbo.UpdateStagedGameKeys
 
 			--create new game records
-			EXEC dbo.InsertNewGames @AnalysisStatusID = 3
+			EXEC dbo.InsertNewGames @AnalysisStatusID = 1
 
 			--add new key values to staged move data
 			EXEC dbo.UpdateStagedMoveKeys
 
 			--create new move records
 			EXEC dbo.InsertNewMoves
-
-			--update move scores
-			EXEC dbo.UpdateMoveScores @fileid = @fhid
 
 			--update game data
 			EXEC dbo.UpdateGameData @fileid = @fhid
@@ -104,7 +101,7 @@ BEGIN TRY
 		RETURN -1
 	END
 
-	RETURN 0
+	RETURN @fhid
 END TRY
 
 BEGIN CATCH
