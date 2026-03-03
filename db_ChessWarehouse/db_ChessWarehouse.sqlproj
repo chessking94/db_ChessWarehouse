@@ -244,6 +244,7 @@
     <Build Include="dbo\Stored Procedures\StageUnanalyzedMoves.sql" />
     <Build Include="stage\Tables\BulkInsertUnanalyzedGames.sql" />
     <Build Include="dim\Tables\AnalysisStatus.sql" />
+    <Build Include="dbo\Tables\TWICLog.sql" />
   </ItemGroup>
   <ItemGroup>
     <PostDeploy Include="PostDeployment.sql" />

@@ -1,0 +1,9 @@
+﻿CREATE TABLE [dbo].[TWICLog]
+(
+	[IssueNumber] SMALLINT NOT NULL
+	,[ReleaseDate] DATE NOT NULL
+	,[DownloadFile] VARCHAR(25) NOT NULL
+	,[GameCount] INT NOT NULL
+	,[ProcessedDate] DATETIME CONSTRAINT [DF_TWICLog_ProcessedDate] DEFAULT (GETDATE()) NOT NULL
+	,CONSTRAINT [PK_TWICLog] PRIMARY KEY ([IssueNumber] ASC)
+)
