@@ -1,6 +1,6 @@
-﻿CREATE FUNCTION [dbo].[sqlSplit] (@CharacterExpression varchar(8000), @Delimiter char(1), @Position int)
+﻿CREATE FUNCTION [dbo].[sqlSplit] (@CharacterExpression VARCHAR(8000), @Delimiter CHAR(1), @Position INT)
 
-RETURNS varchar(8000)
+RETURNS VARCHAR(8000)
 
 AS
 
@@ -8,7 +8,7 @@ BEGIN
 	IF @Position < 1 RETURN NULL
 	IF LEN(@Delimiter) <> 1 RETURN NULL
 
-	DECLARE @Start integer
+	DECLARE @Start INT
 	SET @Start = 1
 	WHILE @Position > 1
 	BEGIN
@@ -18,7 +18,7 @@ BEGIN
 		SET @Start = @Start + 1
 	END
 
-	DECLARE @End int
+	DECLARE @End INT
 	SET @End = ISNULL(CHARINDEX(@Delimiter, @CharacterExpression, @Start), 0)
 	IF @End = 0 SET @End = LEN(@CharacterExpression) + 1
 

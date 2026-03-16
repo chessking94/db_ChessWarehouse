@@ -1,102 +1,106 @@
-﻿CREATE PROCEDURE [dbo].[StageGames] (@fileid int = NULL)
+﻿CREATE PROCEDURE [dbo].[StageGames] (
+	@fileid INT = NULL
+)
 
 AS
 
-TRUNCATE TABLE stage.Games
-
-DECLARE @FileTypeID SMALLINT = (SELECT FileTypeID FROM dbo.FileHistory WHERE FileID = @fileid)
-
-IF @FileTypeID = 1
 BEGIN
-	INSERT INTO stage.Games (
-		SourceName, 
-		SiteName,
-		SiteGameID,
-		WhiteLast,
-		WhiteFirst,
-		BlackLast,
-		BlackFirst,
-		WhiteElo,
-		BlackElo,
-		TimeControlDetail,
-		ECO_Code,
-		GameDate,
-		GameTime,
-		EventName,
-		RoundNum,
-		Result,
-		EventRated,
-		FileID
-	)
+	TRUNCATE TABLE stage.Games
 
-	SELECT
-	Field1 AS SourceName,
-	Field2 AS SiteName,
-	Field3 AS SiteGameID,
-	Field4 AS WhiteLast,
-	Field5 AS WhiteFirst,
-	Field6 AS BlackLast,
-	Field7 AS BlackFirst,
-	Field8 AS WhiteElo,
-	Field9 AS BlackElo,
-	Field10 AS TimeControlDetail,
-	Field11 AS ECO_Code,
-	CASE WHEN ISDATE(Field12) = 1 THEN Field12 ELSE NULL END AS GameDate,
-	Field13 AS GameTime,
-	Field14 AS EventName,
-	Field15 AS RoundNum,
-	Field16 AS Result,
-	Field17 AS EventRated,
-	@fileid AS FileID
+	DECLARE @FileTypeID SMALLINT = (SELECT FileTypeID FROM dbo.FileHistory WHERE FileID = @fileid)
 
-	FROM stage.BulkInsertGameData
+	IF @FileTypeID = 1
+	BEGIN
+		INSERT INTO stage.Games (
+			SourceName
+			,SiteName
+			,SiteGameID
+			,WhiteLast
+			,WhiteFirst
+			,BlackLast
+			,BlackFirst
+			,WhiteElo
+			,BlackElo
+			,TimeControlDetail
+			,ECO_Code
+			,GameDate
+			,GameTime
+			,EventName
+			,RoundNum
+			,Result
+			,EventRated
+			,FileID
+		)
 
-	WHERE RecordKey = 'G'
-END
-ELSE IF @FileTypeID = 3
-BEGIN
-	INSERT INTO stage.Games (
-		SourceName, 
-		SiteName,
-		SiteGameID,
-		WhiteLast,
-		WhiteFirst,
-		BlackLast,
-		BlackFirst,
-		WhiteElo,
-		BlackElo,
-		TimeControlDetail,
-		ECO_Code,
-		GameDate,
-		GameTime,
-		EventName,
-		RoundNum,
-		Result,
-		EventRated,
-		FileID
-	)
+		SELECT
+			Field1 AS SourceName
+			,Field2 AS SiteName
+			,Field3 AS SiteGameID
+			,Field4 AS WhiteLast
+			,Field5 AS WhiteFirst
+			,Field6 AS BlackLast
+			,Field7 AS BlackFirst
+			,Field8 AS WhiteElo
+			,Field9 AS BlackElo
+			,Field10 AS TimeControlDetail
+			,Field11 AS ECO_Code
+			,CASE WHEN ISDATE(Field12) = 1 THEN Field12 ELSE NULL END AS GameDate
+			,Field13 AS GameTime
+			,Field14 AS EventName
+			,Field15 AS RoundNum
+			,Field16 AS Result
+			,Field17 AS EventRated
+			,@fileid AS FileID
 
-	SELECT
-	Field1 AS SourceName,
-	Field2 AS SiteName,
-	Field3 AS SiteGameID,
-	Field4 AS WhiteLast,
-	Field5 AS WhiteFirst,
-	Field6 AS BlackLast,
-	Field7 AS BlackFirst,
-	Field8 AS WhiteElo,
-	Field9 AS BlackElo,
-	Field10 AS TimeControlDetail,
-	Field11 AS ECO_Code,
-	CASE WHEN ISDATE(Field12) = 1 THEN Field12 ELSE NULL END AS GameDate,
-	Field13 AS GameTime,
-	Field14 AS EventName,
-	Field15 AS RoundNum,
-	Field16 AS Result,
-	Field17 AS EventRated,
-	@fileid AS FileID
+		FROM stage.BulkInsertGameData
 
-	FROM stage.BulkInsertUnanalyzedGames
+		WHERE RecordKey = 'G'
+	END
+	ELSE IF @FileTypeID = 3
+	BEGIN
+		INSERT INTO stage.Games (
+			SourceName 
+			,SiteName
+			,SiteGameID
+			,WhiteLast
+			,WhiteFirst
+			,BlackLast
+			,BlackFirst
+			,WhiteElo
+			,BlackElo
+			,TimeControlDetail
+			,ECO_Code
+			,GameDate
+			,GameTime
+			,EventName
+			,RoundNum
+			,Result
+			,EventRated
+			,FileID
+		)
 
-	WHERE RecordKey = 'G'
+		SELECT
+		Field1 AS SourceName
+		,Field2 AS SiteName
+		,Field3 AS SiteGameID
+		,Field4 AS WhiteLast
+		,Field5 AS WhiteFirst
+		,Field6 AS BlackLast
+		,Field7 AS BlackFirst
+		,Field8 AS WhiteElo
+		,Field9 AS BlackElo
+		,Field10 AS TimeControlDetail
+		,Field11 AS ECO_Code
+		,CASE WHEN ISDATE(Field12) = 1 THEN Field12 ELSE NULL END AS GameDate
+		,Field13 AS GameTime
+		,Field14 AS EventName
+		,Field15 AS RoundNum
+		,Field16 AS Result
+		,Field17 AS EventRated
+		,@fileid AS FileID
+
+		FROM stage.BulkInsertUnanalyzedGames
+
+		WHERE RecordKey = 'G'
+	END
 END

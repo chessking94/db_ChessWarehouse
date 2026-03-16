@@ -4,21 +4,20 @@
 	,MyColor VARCHAR(5) NOT NULL
 	,EventName VARCHAR(100) NOT NULL
 	,StartDate DATE NOT NULL
-	,Norm VARCHAR(30)
-	,Wins INT
-	,Losses INT
-	,Draws INT
-	,TotalGames INT
-	,Score DECIMAL(9,8)
-	,AvgRating INT
-	,PerfRating INT
-	,Me_MovesAnalyzed INT
-	,Opp_MovesAnalyzed INT
-	,Me_ACPL DECIMAL(9,6)
-	,Opp_ACPL DECIMAL(9,6)
-	,Me_SDCPL DECIMAL(9,6)
-	,Opp_SDCPL DECIMAL(9,6)
-	,Me_Score DECIMAL(7,4)
-	,Opp_Score DECIMAL(7,4)
+	,Norm VARCHAR(30) NULL
+	,Wins INT NULL
+	,Losses INT NULL
+	,Draws INT NULL
+	,TotalGames INT NULL
+	,Score DECIMAL(9,8) NULL
+	,AvgRating INT NULL
+	,PerfRating INT NULL
+	,Me_MovesAnalyzed INT NULL
+	,Opp_MovesAnalyzed INT NULL
+	,Me_ACPL DECIMAL(9,6) NULL
+	,Opp_ACPL DECIMAL(9,6) NULL
+	,Me_SDCPL DECIMAL(9,6) NULL
+	,Opp_SDCPL DECIMAL(9,6) NULL
+	,Me_Score DECIMAL(7,4) NULL
+	,Opp_Score DECIMAL(7,4) NULL
 )
-GO

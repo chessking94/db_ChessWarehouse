@@ -1,13 +1,13 @@
-﻿CREATE FUNCTION [dbo].[GetPerfRating] (@AvgRating int, @Score decimal(5,4))
-RETURNS int
+﻿CREATE FUNCTION [dbo].[GetPerfRating] (@AvgRating INT, @Score DECIMAL(5,4))
+
+RETURNS INT
 
 AS
 
 BEGIN
-
-	DECLARE @PerfRating int
-	DECLARE @RatingEffect int
-	DECLARE @ScoreRounded decimal(3,2)
+	DECLARE @PerfRating INT
+	DECLARE @RatingEffect INT
+	DECLARE @ScoreRounded DECIMAL(3,2)
 	SET @ScoreRounded = ROUND(@Score, 2)
 	
 	SET @RatingEffect = (SELECT RatingEffect FROM stat.PerfRatingCrossRef WHERE Score = @ScoreRounded)

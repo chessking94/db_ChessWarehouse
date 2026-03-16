@@ -1,36 +1,42 @@
-﻿CREATE PROCEDURE UpdateGameData (@fileid int)
+﻿CREATE PROCEDURE [dbo].[UpdateGameData] (
+	@fileid INT
+)
 
 AS
 
---White berserks
-UPDATE g
-SET g.WhiteBerserk = 1
+BEGIN
+	--White berserks
+	UPDATE g
 
-FROM lake.Games g
-JOIN lake.Moves m ON g.GameID = m.GameID
-JOIN dim.Colors c ON m.ColorID = c.ColorID
-JOIN dim.TimeControlDetail td ON g.TimeControlDetailID = td.TimeControlDetailID
-JOIN dim.TimeControls tc ON td.TimeControlID = tc.TimeControlID
+	SET g.WhiteBerserk = 1
 
-WHERE m.MoveNumber = 1
-AND c.Color = 'White'
-AND td.Seconds IS NOT NULL
-AND m.Clock*2 <= td.Seconds
-AND g.FileID = @fileid
+	FROM lake.Games AS g
+	INNER JOIN lake.Moves AS m ON g.GameID = m.GameID
+	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
+	INNER JOIN dim.TimeControlDetail AS td ON g.TimeControlDetailID = td.TimeControlDetailID
+	INNER JOIN dim.TimeControls AS tc ON td.TimeControlID = tc.TimeControlID
+
+	WHERE m.MoveNumber = 1
+	AND c.Color = 'White'
+	AND td.Seconds IS NOT NULL
+	AND m.Clock*2 <= td.Seconds
+	AND g.FileID = @fileid
 
 
---Black berserks
-UPDATE g
-SET g.BlackBerserk = 1
+	--Black berserks
+	UPDATE g
 
-FROM lake.Games g
-JOIN lake.Moves m ON g.GameID = m.GameID
-JOIN dim.Colors c ON m.ColorID = c.ColorID
-JOIN dim.TimeControlDetail td ON g.TimeControlDetailID = td.TimeControlDetailID
-JOIN dim.TimeControls tc ON td.TimeControlID = tc.TimeControlID
+	SET g.BlackBerserk = 1
 
-WHERE m.MoveNumber = 1
-AND c.Color = 'Black'
-AND td.Seconds IS NOT NULL
-AND m.Clock*2 <= td.Seconds
-AND g.FileID = @fileid
+	FROM lake.Games AS g
+	INNER JOIN lake.Moves AS m ON g.GameID = m.GameID
+	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
+	INNER JOIN dim.TimeControlDetail AS td ON g.TimeControlDetailID = td.TimeControlDetailID
+	INNER JOIN dim.TimeControls AS tc ON td.TimeControlID = tc.TimeControlID
+
+	WHERE m.MoveNumber = 1
+	AND c.Color = 'Black'
+	AND td.Seconds IS NOT NULL
+	AND m.Clock*2 <= td.Seconds
+	AND g.FileID = @fileid
+END

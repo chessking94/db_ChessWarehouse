@@ -1,84 +1,83 @@
 ﻿CREATE TABLE [stage].[Moves] (
-    [Errors]      VARCHAR (100)  NULL,
-    [SiteGameID]  VARCHAR (15)   COLLATE Latin1_General_CS_AS NULL,
-    [GameID]      INT            NULL,
-    [MoveNumber]  SMALLINT       NULL,
-    [Color]       CHAR (5)       NULL,
-    [IsTheory]    BIT            NULL,
-    [IsTablebase] BIT            NULL,
-    [EngineName]  VARCHAR (20)   NULL,
-    [Depth]       TINYINT        NULL,
-    [Clock]       INT            NULL,
-    [TimeSpent]   INT            NULL,
-    [FEN]         VARCHAR (92)   NULL,
-    [PhaseID]     TINYINT        NULL,
-    [Move]        VARCHAR (10)   NULL,
-    [Move_Eval]   VARCHAR (7)    NULL,
-    [Move_Rank]   TINYINT        NULL,
-    [CP_Loss]     DECIMAL (5, 2) NULL,
-    [T1]          VARCHAR (10)   NULL,
-    [T1_Eval]     VARCHAR (7)    NULL,
-    [T2]          VARCHAR (10)   NULL,
-    [T2_Eval]     VARCHAR (7)    NULL,
-    [T3]          VARCHAR (10)   NULL,
-    [T3_Eval]     VARCHAR (7)    NULL,
-    [T4]          VARCHAR (10)   NULL,
-    [T4_Eval]     VARCHAR (7)    NULL,
-    [T5]          VARCHAR (10)   NULL,
-    [T5_Eval]     VARCHAR (7)    NULL,
-    [T6]          VARCHAR (10)   NULL,
-    [T6_Eval]     VARCHAR (7)    NULL,
-    [T7]          VARCHAR (10)   NULL,
-    [T7_Eval]     VARCHAR (7)    NULL,
-    [T8]          VARCHAR (10)   NULL,
-    [T8_Eval]     VARCHAR (7)    NULL,
-    [T9]          VARCHAR (10)   NULL,
-    [T9_Eval]     VARCHAR (7)    NULL,
-    [T10]         VARCHAR (10)   NULL,
-    [T10_Eval]    VARCHAR (7)    NULL,
-    [T11]         VARCHAR (10)   NULL,
-    [T11_Eval]    VARCHAR (7)    NULL,
-    [T12]         VARCHAR (10)   NULL,
-    [T12_Eval]    VARCHAR (7)    NULL,
-    [T13]         VARCHAR (10)   NULL,
-    [T13_Eval]    VARCHAR (7)    NULL,
-    [T14]         VARCHAR (10)   NULL,
-    [T14_Eval]    VARCHAR (7)    NULL,
-    [T15]         VARCHAR (10)   NULL,
-    [T15_Eval]    VARCHAR (7)    NULL,
-    [T16]         VARCHAR (10)   NULL,
-    [T16_Eval]    VARCHAR (7)    NULL,
-    [T17]         VARCHAR (10)   NULL,
-    [T17_Eval]    VARCHAR (7)    NULL,
-    [T18]         VARCHAR (10)   NULL,
-    [T18_Eval]    VARCHAR (7)    NULL,
-    [T19]         VARCHAR (10)   NULL,
-    [T19_Eval]    VARCHAR (7)    NULL,
-    [T20]         VARCHAR (10)   NULL,
-    [T20_Eval]    VARCHAR (7)    NULL,
-    [T21]         VARCHAR (10)   NULL,
-    [T21_Eval]    VARCHAR (7)    NULL,
-    [T22]         VARCHAR (10)   NULL,
-    [T22_Eval]    VARCHAR (7)    NULL,
-    [T23]         VARCHAR (10)   NULL,
-    [T23_Eval]    VARCHAR (7)    NULL,
-    [T24]         VARCHAR (10)   NULL,
-    [T24_Eval]    VARCHAR (7)    NULL,
-    [T25]         VARCHAR (10)   NULL,
-    [T25_Eval]    VARCHAR (7)    NULL,
-    [T26]         VARCHAR (10)   NULL,
-    [T26_Eval]    VARCHAR (7)    NULL,
-    [T27]         VARCHAR (10)   NULL,
-    [T27_Eval]    VARCHAR (7)    NULL,
-    [T28]         VARCHAR (10)   NULL,
-    [T28_Eval]    VARCHAR (7)    NULL,
-    [T29]         VARCHAR (10)   NULL,
-    [T29_Eval]    VARCHAR (7)    NULL,
-    [T30]         VARCHAR (10)   NULL,
-    [T30_Eval]    VARCHAR (7)    NULL,
-    [T31]         VARCHAR (10)   NULL,
-    [T31_Eval]    VARCHAR (7)    NULL,
-    [T32]         VARCHAR (10)   NULL,
-    [T32_Eval]    VARCHAR (7)    NULL
-);
-
+ [Errors] VARCHAR(100) NULL
+ ,[SiteGameID] VARCHAR(15) COLLATE Latin1_General_CS_AS NULL
+ ,[GameID] INT NULL
+ ,[MoveNumber] SMALLINT NULL
+ ,[Color] CHAR(5) NULL
+ ,[IsTheory] BIT NULL
+ ,[IsTablebase] BIT NULL
+ ,[EngineName] VARCHAR(20) NULL
+ ,[Depth] TINYINT NULL
+ ,[Clock] INT NULL
+ ,[TimeSpent] INT NULL
+ ,[FEN] VARCHAR(92) NULL
+ ,[PhaseID] TINYINT NULL
+ ,[Move] VARCHAR(10) NULL
+ ,[Move_Eval] VARCHAR(7) NULL
+ ,[Move_Rank] TINYINT NULL
+ ,[CP_Loss] DECIMAL(5,2) NULL
+ ,[T1] VARCHAR(10) NULL
+ ,[T1_Eval] VARCHAR(7) NULL
+ ,[T2] VARCHAR(10) NULL
+ ,[T2_Eval] VARCHAR(7) NULL
+ ,[T3] VARCHAR(10) NULL
+ ,[T3_Eval] VARCHAR(7) NULL
+ ,[T4] VARCHAR(10) NULL
+ ,[T4_Eval] VARCHAR(7) NULL
+ ,[T5] VARCHAR(10) NULL
+ ,[T5_Eval] VARCHAR(7) NULL
+ ,[T6] VARCHAR(10) NULL
+ ,[T6_Eval] VARCHAR(7) NULL
+ ,[T7] VARCHAR(10) NULL
+ ,[T7_Eval] VARCHAR(7) NULL
+ ,[T8] VARCHAR(10) NULL
+ ,[T8_Eval] VARCHAR(7) NULL
+ ,[T9] VARCHAR(10) NULL
+ ,[T9_Eval] VARCHAR(7) NULL
+ ,[T10] VARCHAR(10) NULL
+ ,[T10_Eval] VARCHAR(7) NULL
+ ,[T11] VARCHAR(10) NULL
+ ,[T11_Eval] VARCHAR(7) NULL
+ ,[T12] VARCHAR(10) NULL
+ ,[T12_Eval] VARCHAR(7) NULL
+ ,[T13] VARCHAR(10) NULL
+ ,[T13_Eval] VARCHAR(7) NULL
+ ,[T14] VARCHAR(10) NULL
+ ,[T14_Eval] VARCHAR(7) NULL
+ ,[T15] VARCHAR(10) NULL
+ ,[T15_Eval] VARCHAR(7) NULL
+ ,[T16] VARCHAR(10) NULL
+ ,[T16_Eval] VARCHAR(7) NULL
+ ,[T17] VARCHAR(10) NULL
+ ,[T17_Eval] VARCHAR(7) NULL
+ ,[T18] VARCHAR(10) NULL
+ ,[T18_Eval] VARCHAR(7) NULL
+ ,[T19] VARCHAR(10) NULL
+ ,[T19_Eval] VARCHAR(7) NULL
+ ,[T20] VARCHAR(10) NULL
+ ,[T20_Eval] VARCHAR(7) NULL
+ ,[T21] VARCHAR(10) NULL
+ ,[T21_Eval] VARCHAR(7) NULL
+ ,[T22] VARCHAR(10) NULL
+ ,[T22_Eval] VARCHAR(7) NULL
+ ,[T23] VARCHAR(10) NULL
+ ,[T23_Eval] VARCHAR(7) NULL
+ ,[T24] VARCHAR(10) NULL
+ ,[T24_Eval] VARCHAR(7) NULL
+ ,[T25] VARCHAR(10) NULL
+ ,[T25_Eval] VARCHAR(7) NULL
+ ,[T26] VARCHAR(10) NULL
+ ,[T26_Eval] VARCHAR(7) NULL
+ ,[T27] VARCHAR(10) NULL
+ ,[T27_Eval] VARCHAR(7) NULL
+ ,[T28] VARCHAR(10) NULL
+ ,[T28_Eval] VARCHAR(7) NULL
+ ,[T29] VARCHAR(10) NULL
+ ,[T29_Eval] VARCHAR(7) NULL
+ ,[T30] VARCHAR(10) NULL
+ ,[T30_Eval] VARCHAR(7) NULL
+ ,[T31] VARCHAR(10) NULL
+ ,[T31_Eval] VARCHAR(7) NULL
+ ,[T32] VARCHAR(10) NULL
+ ,[T32_Eval] VARCHAR(7) NULL
+)

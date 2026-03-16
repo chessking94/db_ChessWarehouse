@@ -1,64 +1,63 @@
 ﻿CREATE TABLE [rpt].[GameSummary]
 (
-	GameID INT
-	,SourceName VARCHAR(15)
-	,SelfWhiteFlag BIT
-	,SelfFlagBlack BIT
-	,SiteName VARCHAR(26)
-	,SiteGameID VARCHAR(15)
-	,WhiteLast VARCHAR(50)
-	,WhiteFirst VARCHAR(30)
-	,WhiteElo SMALLINT
-	,BlackLast VARCHAR(50)
-	,BlackFirst VARCHAR(30)
-	,BlackElo SMALLINT
-	,ECO CHAR(3)
-	,GameDate DATE
-	,EventName VARCHAR(100)
-	,RoundNum TINYINT
-	,TimeControlDetail VARCHAR(15)
-	,TimeControlName VARCHAR(15)
-	,Result DECIMAL(2,1)
-	,Moves SMALLINT
-	,Book_Moves SMALLINT
-	,Tablebase_Moves SMALLINT
-	,White_CPL_Moves SMALLINT
-	,White_CPL_1 SMALLINT
-	,White_CPL_2 SMALLINT
-	,White_CPL_3 SMALLINT
-	,White_CPL_4 SMALLINT
-	,White_CPL_5 SMALLINT
-	,White_CPL_6 SMALLINT
-	,White_CPL_7 SMALLINT
-	,White_CPL_8 SMALLINT
-	,Black_CPL_Moves SMALLINT
-	,Black_CPL_1 SMALLINT
-	,Black_CPL_2 SMALLINT
-	,Black_CPL_3 SMALLINT
-	,Black_CPL_4 SMALLINT
-	,Black_CPL_5 SMALLINT
-	,Black_CPL_6 SMALLINT
-	,Black_CPL_7 SMALLINT
-	,Black_CPL_8 SMALLINT
-	,White_MovesAnalyzed SMALLINT
-	,White_T1 DECIMAL(9,8)
-	,White_T2 DECIMAL(9,8)
-	,White_T3 DECIMAL(9,8)
-	,White_T4 DECIMAL(9,8)
-	,White_T5 DECIMAL(9,8)
-	,Black_MovesAnalyzed SMALLINT
-	,Black_T1 DECIMAL(9,8)
-	,Black_T2 DECIMAL(9,8)
-	,Black_T3 DECIMAL(9,8)
-	,Black_T4 DECIMAL(9,8)
-	,Black_T5 DECIMAL(9,8)
-	,White_ACPL DECIMAL(9,6)
-	,Black_ACPL DECIMAL(9,6)
-	,White_SDCPL DECIMAL(9,6)
-	,Black_SDCPL DECIMAL(9,6)
-	,White_Score DECIMAL(7,4)
-	,Black_Score DECIMAL(7,4)
-	,White_ROI DECIMAL(9,6)
-	,Black_ROI DECIMAL(9,6)
+	GameID INT NULL
+	,SourceName VARCHAR(15) NULL
+	,SelfWhiteFlag BIT NULL
+	,SelfFlagBlack BIT NULL
+	,SiteName VARCHAR(26) NULL
+	,SiteGameID VARCHAR(15) NULL
+	,WhiteLast VARCHAR(50) NULL
+	,WhiteFirst VARCHAR(30) NULL
+	,WhiteElo SMALLINT NULL
+	,BlackLast VARCHAR(50) NULL
+	,BlackFirst VARCHAR(30) NULL
+	,BlackElo SMALLINT NULL
+	,ECO CHAR(3) NULL
+	,GameDate DATE NULL
+	,EventName VARCHAR(100) NULL
+	,RoundNum TINYINT NULL
+	,TimeControlDetail VARCHAR(15) NULL
+	,TimeControlName VARCHAR(15) NULL
+	,Result DECIMAL(2,1) NULL
+	,Moves SMALLINT NULL
+	,Book_Moves SMALLINT NULL
+	,Tablebase_Moves SMALLINT NULL
+	,White_CPL_Moves SMALLINT NULL
+	,White_CPL_1 SMALLINT NULL
+	,White_CPL_2 SMALLINT NULL
+	,White_CPL_3 SMALLINT NULL
+	,White_CPL_4 SMALLINT NULL
+	,White_CPL_5 SMALLINT NULL
+	,White_CPL_6 SMALLINT NULL
+	,White_CPL_7 SMALLINT NULL
+	,White_CPL_8 SMALLINT NULL
+	,Black_CPL_Moves SMALLINT NULL
+	,Black_CPL_1 SMALLINT NULL
+	,Black_CPL_2 SMALLINT NULL
+	,Black_CPL_3 SMALLINT NULL
+	,Black_CPL_4 SMALLINT NULL
+	,Black_CPL_5 SMALLINT NULL
+	,Black_CPL_6 SMALLINT NULL
+	,Black_CPL_7 SMALLINT NULL
+	,Black_CPL_8 SMALLINT NULL
+	,White_MovesAnalyzed SMALLINT NULL
+	,White_T1 DECIMAL(9,8) NULL
+	,White_T2 DECIMAL(9,8) NULL
+	,White_T3 DECIMAL(9,8) NULL
+	,White_T4 DECIMAL(9,8) NULL
+	,White_T5 DECIMAL(9,8) NULL
+	,Black_MovesAnalyzed SMALLINT NULL
+	,Black_T1 DECIMAL(9,8) NULL
+	,Black_T2 DECIMAL(9,8) NULL
+	,Black_T3 DECIMAL(9,8) NULL
+	,Black_T4 DECIMAL(9,8) NULL
+	,Black_T5 DECIMAL(9,8) NULL
+	,White_ACPL DECIMAL(9,6) NULL
+	,Black_ACPL DECIMAL(9,6) NULL
+	,White_SDCPL DECIMAL(9,6) NULL
+	,Black_SDCPL DECIMAL(9,6) NULL
+	,White_Score DECIMAL(7,4) NULL
+	,Black_Score DECIMAL(7,4) NULL
+	,White_ROI DECIMAL(9,6) NULL
+	,Black_ROI DECIMAL(9,6) NULL
 )
-GO

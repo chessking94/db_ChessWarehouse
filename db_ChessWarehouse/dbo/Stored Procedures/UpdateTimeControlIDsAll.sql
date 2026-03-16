@@ -1,5 +1,7 @@
-﻿CREATE PROCEDURE UpdateTimeControlIDsAll
+﻿CREATE PROCEDURE [dbo].[UpdateTimeControlIDsAll]
 
 AS
 
-UPDATE dim.TimeControlDetail SET TimeControlID = dbo.GetTimeControlID(TimeControlDetail)
+BEGIN
+	UPDATE dim.TimeControlDetail SET TimeControlID = dbo.GetTimeControlID(TimeControlDetail)
+END

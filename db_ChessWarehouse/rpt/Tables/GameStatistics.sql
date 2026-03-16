@@ -5,7 +5,6 @@
 	,SourceName VARCHAR(15) NOT NULL
 	,GameNumber VARCHAR(15) NOT NULL
 	,Statistic VARCHAR(14) NOT NULL
-	,White DECIMAL(9,6)
-	,Black DECIMAL(9,6)
+	,White DECIMAL(9,6) NULL
+	,Black DECIMAL(9,6) NULL
 )
-GO
