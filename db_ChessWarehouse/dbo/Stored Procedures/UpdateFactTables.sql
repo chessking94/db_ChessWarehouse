@@ -5,10 +5,10 @@
 AS
 
 BEGIN
-	EXEC dbo.InsertEventFacts @piFileID = @piFileID
+	EXEC dbo.InsertEventFacts @FileID = @piFileID
 	EXEC dbo.UpdateEventFacts
 
-	EXEC dbo.InsertGameFacts @piFileID = @piFileID
+	EXEC dbo.InsertGameFacts @FileID = @piFileID
 	EXEC dbo.UpdateGameFacts
 
 	--only update evaluation tables if completing a full recalc, no way to specify updates for just the new file
