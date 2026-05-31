@@ -9,7 +9,7 @@ BEGIN
 		GameID
 		,SourceName
 		,SelfWhiteFlag
-		,SelfFlagBlack
+		,SelfBlackFlag
 		,SiteName
 		,SiteGameID
 		,WhiteLast
@@ -72,7 +72,7 @@ BEGIN
 		GameID
 		,SourceName
 		,SelfWhiteFlag
-		,SelfFlagBlack
+		,SelfBlackFlag
 		,SiteName
 		,SiteGameID
 		,WhiteLast

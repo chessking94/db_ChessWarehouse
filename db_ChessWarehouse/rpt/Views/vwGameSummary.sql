@@ -6,7 +6,7 @@ SELECT
 	g.GameID
 	,s.SourceName
 	,wp.SelfFlag AS SelfWhiteFlag
-	,bp.SelfFlag AS SelfFlagBlack
+	,bp.SelfFlag AS SelfBlackFlag
 	,st.SiteName
 	,g.SiteGameID
 	,wp.LastName AS WhiteLast

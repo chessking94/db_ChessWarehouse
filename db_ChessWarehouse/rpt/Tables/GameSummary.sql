@@ -3,7 +3,7 @@
 	GameID INT NULL
 	,SourceName VARCHAR(15) NULL
 	,SelfWhiteFlag BIT NULL
-	,SelfFlagBlack BIT NULL
+	,SelfBlackFlag BIT NULL
 	,SiteName VARCHAR(26) NULL
 	,SiteGameID VARCHAR(15) NULL
 	,WhiteLast VARCHAR(50) NULL
