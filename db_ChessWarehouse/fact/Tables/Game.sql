@@ -36,7 +36,7 @@
 	 ,[T5_Z] DECIMAL(9,6) NULL
 	 ,CONSTRAINT [PK_FGame] PRIMARY KEY CLUSTERED ([SourceID] ASC, [GameID] ASC, [ColorID] ASC)
 	 ,CONSTRAINT [FK_FGame_ColorID] FOREIGN KEY ([ColorID]) REFERENCES [dim].[Colors] ([ColorID])
-	 ,CONSTRAINT [FK_FGame_GameID] FOREIGN KEY ([GameID]) REFERENCES [lake].[Games] ([GameID])
+	 ,CONSTRAINT [FK_FGame_GameID] FOREIGN KEY ([GameID]) REFERENCES [lake].[Games] ([GameID]) ON DELETE CASCADE
 	 ,CONSTRAINT [FK_FGame_PlayerID] FOREIGN KEY ([PlayerID]) REFERENCES [dim].[Players] ([PlayerID])
 	 ,CONSTRAINT [FK_FGame_RatingID] FOREIGN KEY ([RatingID]) REFERENCES [dim].[Ratings] ([RatingID])
 	 ,CONSTRAINT [FK_FGame_SourceID] FOREIGN KEY ([SourceID]) REFERENCES [dim].[Sources] ([SourceID])
