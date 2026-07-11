@@ -86,7 +86,7 @@ BEGIN
 				EXEC dbo.InsertNewMoves
 
 				--update move scores
-				EXEC dbo.UpdateMoveScores @fileid = @fhid
+				EXEC dbo.UpdateMoveScores @FileID = @fhid
 
 				--update game data
 				EXEC dbo.UpdateGameData @fileid = @fhid

@@ -27,16 +27,20 @@ BEGIN
 		AND ms.MoveNumber = m.MoveNumber
 		AND ms.ColorID = m.ColorID
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
+	INNER JOIN FileHistory AS fh ON g.FileID = fh.FileID
 	INNER JOIN dim.TimeControlDetail AS td ON g.TimeControlDetailID = td.TimeControlDetailID
 	LEFT JOIN stat.EvalDistributions AS t1 ON g.SourceID = t1.SourceID
 		AND td.TimeControlID = t1.TimeControlID
 		AND m.T1_Eval_POV = t1.Evaluation
+		AND t1.DistributionID = 1
 	LEFT JOIN stat.EvalDistributions AS mp ON g.SourceID = mp.SourceID
 		AND td.TimeControlID = mp.TimeControlID
 		AND m.Move_Eval_POV = mp.Evaluation
-	LEFT JOIN FileHistory AS fh ON g.FileID = fh.FileID
+		AND mp.DistributionID = 1
 
 	WHERE m.MoveScored = 1
-	AND (fh.FileID = @FileID OR ISNULL(@FileID, -1) = -1)
+	AND (fh.FileID = @FileID OR @FileID IS NULL)
 	AND ms.ScoreID = 1
+
+	OPTION (RECOMPILE)
 END

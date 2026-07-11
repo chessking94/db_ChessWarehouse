@@ -8,6 +8,8 @@
 	,CONSTRAINT [UC_Scores_ScoreName] UNIQUE NONCLUSTERED ([ScoreName] ASC)
 );
 
+GO
+CREATE NONCLUSTERED INDEX [IDX_DScores_ScoreActive] ON [dim].[Scores] (ScoreActive) INCLUDE (ScoreID);
 
 GO
 CREATE TRIGGER [dim].[TRG_Scores] ON [dim].[Scores]

@@ -10,3 +10,6 @@
 	,CONSTRAINT [FK_EvalDistribution_SourceID] FOREIGN KEY ([SourceID]) REFERENCES [dim].[Sources] ([SourceID])
 	,CONSTRAINT [FK_EvalDistribution_TimeControlID] FOREIGN KEY ([TimeControlID]) REFERENCES [dim].[TimeControls] ([TimeControlID])
 )
+
+GO
+CREATE NONCLUSTERED INDEX [IDX_EvalDistributions_Lookup] ON [stat].[EvalDistributions] ([SourceID], [TimeControlID], [DistributionID], [Evaluation]) INCLUDE ([PDF], [CDF]);

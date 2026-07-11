@@ -89,7 +89,7 @@ BEGIN
 		AND m.CP_Loss <= cp.UBound
 
 	WHERE g.SourceID NOT IN (2, 4)
-	AND (ISNULL(@FileID, -1) = -1 OR g.EventID IN (SELECT EventID FROM #Events))
+	AND (@FileID IS NULL OR g.EventID IN (SELECT EventID FROM #Events))
 
 	GROUP BY
 		g.EventID

@@ -87,7 +87,7 @@ BEGIN
 	LEFT JOIN dim.CPLossGroups AS cp ON m.CP_Loss >= cp.LBound
 		AND m.CP_Loss <= cp.UBound
 
-	WHERE (ISNULL(@FileID, -1) = -1 OR g.GameID IN (SELECT GameID FROM #Games))
+	WHERE (@FileID IS NULL OR g.GameID IN (SELECT GameID FROM #Games))
 
 	GROUP BY
 		g.SourceID

@@ -21,16 +21,20 @@ BEGIN
 		AND ms.MoveNumber = m.MoveNumber
 		AND ms.ColorID = m.ColorID
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
+	INNER JOIN FileHistory AS fh ON g.FileID = fh.FileID
 	INNER JOIN dim.TimeControlDetail AS td ON g.TimeControlDetailID = td.TimeControlDetailID
 	LEFT JOIN stat.EvalDistributions AS t1 ON m.T1_Eval_POV = t1.Evaluation
+		AND t1.DistributionID = 1
 	LEFT JOIN stat.EvalDistributions AS mp ON t1.SourceID = mp.SourceID
 		AND t1.TimeControlID = mp.TimeControlID
 		AND m.Move_Eval_POV = mp.Evaluation
-	LEFT JOIN FileHistory AS fh ON g.FileID = fh.FileID
+		AND mp.DistributionID = 1
 
 	WHERE m.MoveScored = 1
 	AND t1.SourceID = dbo.GetSettingValue('WinProbabilityLostEqual Source')
 	AND t1.TimeControlID = dbo.GetSettingValue('WinProbabilityLostEqual Time Control')
-	AND (fh.FileID = @FileID OR ISNULL(@FileID, -1) = -1)
+	AND (fh.FileID = @FileID OR @FileID IS NULL)
 	AND ms.ScoreID = 2
+
+	OPTION (RECOMPILE)
 END

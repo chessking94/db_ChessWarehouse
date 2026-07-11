@@ -1,5 +1,5 @@
 ﻿CREATE PROCEDURE [dbo].[UpdateMoveScores] (
-	@fileid INT
+	@FileID INT
 )
 
 AS
@@ -8,7 +8,7 @@ BEGIN
 	DECLARE @ForcedMoveThreshold DECIMAL(5,2) = CAST(dbo.GetSettingValue(1) AS DECIMAL(5,2))
 	DECLARE @MaxEval DECIMAL(5,2) = CAST(dbo.GetSettingValue(3) AS DECIMAL(5,2))
 
-	--TraceKey
+	--TraceKey and MovesAnalyzed
 	;WITH cte AS (
 		SELECT
 			m.GameID
@@ -18,34 +18,47 @@ BEGIN
 
 		FROM lake.Moves AS m
 		INNER JOIN lake.Games AS g ON m.GameID = g.GameID
-		LEFT JOIN FileHistory AS fh ON g.FileID = fh.FileID
+		INNER JOIN FileHistory AS fh ON g.FileID = fh.FileID
 
-		WHERE fh.FileID = @fileid
+		WHERE fh.FileID = @FileID
 	)
 
 	UPDATE m
 	SET m.TraceKey = (
-		CASE
-			WHEN m.IsTheory = 1 THEN 'b'  --book moves
-			WHEN m.IsTablebase = 1 THEN 't'  --tablebase moves
-			WHEN ISNULL(ABS(m.T1_Eval_POV), 100) > @MaxEval AND ISNULL(ABS(m.Move_Eval_POV), 100) > @MaxEval THEN 'e'  --eval is considered clearly winning; both are are to allow really bad blunders to be scored
-			WHEN cte.Position_Count > 1 THEN 'r'  --repeated positions
-			WHEN m.T2_Eval IS NULL OR (ABS((CASE WHEN LEFT(m.T1_Eval, 1) = '#' THEN 100 ELSE CAST(m.T1_Eval AS DECIMAL(5,2)) END) - (CASE WHEN LEFT(m.T2_Eval, 1) = '#' THEN 100 ELSE CAST(m.T2_Eval AS DECIMAL(5,2)) END)) > @ForcedMoveThreshold AND m.Move_Rank = 1) THEN 'f'  --forced moves
-			WHEN m.Move_Rank = 1 THEN 'M'  --eval matches
-			ELSE '0'  --move must have been subpar
-		END
-	)
+			CASE
+				WHEN m.IsTheory = 1 THEN 'b'  --book moves
+				WHEN m.IsTablebase = 1 THEN 't'  --tablebase moves
+				WHEN ISNULL(ABS(m.T1_Eval_POV), 100) > @MaxEval AND ISNULL(ABS(m.Move_Eval_POV), 100) > @MaxEval THEN 'e'  --eval is considered clearly winning; both are are to allow really bad blunders to be scored
+				WHEN cte.Position_Count > 1 THEN 'r'  --repeated positions
+				WHEN m.T2_Eval IS NULL OR (ABS((CASE WHEN LEFT(m.T1_Eval, 1) = '#' THEN 100 ELSE CAST(m.T1_Eval AS DECIMAL(5,2)) END) - (CASE WHEN LEFT(m.T2_Eval, 1) = '#' THEN 100 ELSE CAST(m.T2_Eval AS DECIMAL(5,2)) END)) > @ForcedMoveThreshold AND m.Move_Rank = 1) THEN 'f'  --forced moves
+				WHEN m.Move_Rank = 1 THEN 'M'  --eval matches
+				ELSE '0'  --move must have been subpar
+			END
+		)
+		,m.MovesAnalyzed = (
+			CASE
+				WHEN m.T2_Eval IS NULL THEN 1
+				WHEN m.T3_Eval IS NULL THEN 2
+				WHEN m.T4_Eval IS NULL THEN 3
+				WHEN m.T5_Eval IS NULL THEN 4
+				WHEN m.T6_Eval IS NULL THEN 5
+				WHEN m.T7_Eval IS NULL THEN 6
+				WHEN m.T8_Eval IS NULL THEN 7
+				WHEN m.T9_Eval IS NULL THEN 8
+				WHEN m.T10_Eval IS NULL THEN 9
+				ELSE 10
+			END
+		)
 
 	FROM lake.Moves AS m
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
-	LEFT JOIN FileHistory fh ON
-		g.FileID = fh.FileID
+	INNER JOIN FileHistory fh ON g.FileID = fh.FileID
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
 	INNER JOIN cte ON m.GameID = cte.GameID
 		AND m.MoveNumber = cte.MoveNumber
 		AND m.ColorID = cte.ColorID
 
-	WHERE fh.FileID = @fileid
+	WHERE fh.FileID = @FileID
 
 
 	--MoveScored
@@ -56,57 +69,10 @@ BEGIN
 	FROM lake.Moves AS m
 	INNER JOIN dim.Traces AS t ON m.TraceKey = t.TraceKey
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
-	LEFT JOIN FileHistory AS fh ON g.FileID = fh.FileID
+	INNER JOIN FileHistory AS fh ON g.FileID = fh.FileID
 
 	WHERE t.Scored = 1
-	AND fh.FileID = @fileid
-
-
-	--MovesAnalyzed
-	UPDATE m
-
-	SET m.MovesAnalyzed = (
-		CASE
-			WHEN m.T2_Eval IS NULL THEN 1
-			WHEN m.T3_Eval IS NULL THEN 2
-			WHEN m.T4_Eval IS NULL THEN 3
-			WHEN m.T5_Eval IS NULL THEN 4
-			WHEN m.T6_Eval IS NULL THEN 5
-			WHEN m.T7_Eval IS NULL THEN 6
-			WHEN m.T8_Eval IS NULL THEN 7
-			WHEN m.T9_Eval IS NULL THEN 8
-			WHEN m.T10_Eval IS NULL THEN 9
-			WHEN m.T11_Eval IS NULL THEN 10
-			WHEN m.T12_Eval IS NULL THEN 11
-			WHEN m.T13_Eval IS NULL THEN 12
-			WHEN m.T14_Eval IS NULL THEN 13
-			WHEN m.T15_Eval IS NULL THEN 14
-			WHEN m.T16_Eval IS NULL THEN 15
-			WHEN m.T17_Eval IS NULL THEN 16
-			WHEN m.T18_Eval IS NULL THEN 17
-			WHEN m.T19_Eval IS NULL THEN 18
-			WHEN m.T20_Eval IS NULL THEN 19
-			WHEN m.T21_Eval IS NULL THEN 20
-			WHEN m.T22_Eval IS NULL THEN 21
-			WHEN m.T23_Eval IS NULL THEN 22
-			WHEN m.T24_Eval IS NULL THEN 23
-			WHEN m.T25_Eval IS NULL THEN 24
-			WHEN m.T26_Eval IS NULL THEN 25
-			WHEN m.T27_Eval IS NULL THEN 26
-			WHEN m.T28_Eval IS NULL THEN 27
-			WHEN m.T29_Eval IS NULL THEN 28
-			WHEN m.T30_Eval IS NULL THEN 29
-			WHEN m.T31_Eval IS NULL THEN 30
-			WHEN m.T32_Eval IS NULL THEN 31
-			ELSE 32
-		END
-	)
-
-	FROM lake.Moves AS m
-	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
-	LEFT JOIN FileHistory AS fh ON g.FileID = fh.FileID
-
-	WHERE fh.FileID = @fileid
+	AND fh.FileID = @FileID
 
 
 	--stat.MoveScores
@@ -123,7 +89,7 @@ BEGIN
 	BEGIN
 		SET @ScoreProc = (SELECT ScoreProc FROM dim.Scores WHERE ScoreID = @ScoreID)
 
-		IF @fileid IS NOT NULL SET @vsql = N'EXEC ' + @ScoreProc + ' ' + CONVERT(NVARCHAR(5), @fileid)
+		IF @FileID IS NOT NULL SET @vsql = N'EXEC ' + @ScoreProc + ' ' + CONVERT(NVARCHAR(5), @FileID)
 		ELSE SET @vsql = N'EXEC ' + @ScoreProc
 
 		--PRINT @vsql

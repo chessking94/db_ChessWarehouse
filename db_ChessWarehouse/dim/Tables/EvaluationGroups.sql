@@ -6,3 +6,6 @@
 	,[Range] AS ((CONVERT(VARCHAR(7), [LBound]) + '_') + CONVERT(VARCHAR(7), [UBound]))
 	,CONSTRAINT [PK_EvaluationGroups] PRIMARY KEY CLUSTERED ([EvaluationGroupID] ASC)
 )
+
+GO
+CREATE NONCLUSTERED INDEX [IDX_EvaluationGroup_Bounds] ON [dim].[EvaluationGroups] ([LBound] ASC, [UBound] ASC) INCLUDE ([EvaluationGroupID])

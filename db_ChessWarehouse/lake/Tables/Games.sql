@@ -52,3 +52,6 @@ CREATE NONCLUSTERED INDEX [IDX_LGames_TimeControlDetailID] ON [lake].[Games]([Ti
 
 GO
 CREATE NONCLUSTERED INDEX [IDX_LGames_AnalysisStatusID] ON [lake].[Games]([AnalysisStatusID] ASC);
+
+GO
+CREATE NONCLUSTERED INDEX [IDX_LGames_FileID] ON [lake].[Games]([FileID] ASC);

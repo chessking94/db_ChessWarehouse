@@ -16,22 +16,84 @@ AS
 */
 
 BEGIN
-	UPDATE ms
+	-- precompute evaluation group assignments in a temp table, this eliminates nested loop joins
+	CREATE TABLE #MoveEvalGroups (
+		GameID INT NOT NULL
+		,MoveNumber SMALLINT NOT NULL
+		,ColorID TINYINT NOT NULL
+		,EG1_ID TINYINT NOT NULL
+		,EG2_ID TINYINT NOT NULL
+		,EG3_ID TINYINT NOT NULL
+		,EG4_ID TINYINT NOT NULL
+		,EG5_ID TINYINT NOT NULL
+		,PRIMARY KEY (GameID, MoveNumber, ColorID)
+		,INDEX IX_MoveEvalGroups_EGColumns (EG1_ID, EG2_ID, EG3_ID, EG4_ID, EG5_ID)
+	)
 
-	SET ms.ScoreValue = (
-			(1 - (
-			CASE m.Move_Rank 
-				WHEN 1 THEN sp.T1
-				WHEN 2 THEN sp.T2
-				WHEN 3 THEN sp.T3
-				WHEN 4 THEN sp.T4
-				WHEN 5 THEN sp.T5
-				ELSE (CASE WHEN sp.T1 IS NULL THEN NULL WHEN (sp.ScACPL IS NULL OR ISNULL(sp.ScSDCPL, 0) = 0) THEN 1 ELSE (sp.T5 + ((1-sp.T5)/(1+EXP(-((m.ScACPL-sp.ScACPL)/sp.ScSDCPL))))) END)  --convert ScACPL to a Z-score, run that through logistic function with range (sp.T5, 1) to determine final weight
-			END))*CAST((6*EXP(-(2*LOG(5+2*SQRT(6)))*(sp.WinPercentage-0.5)))/POWER((1+EXP(-(2*LOG(5+2*SQRT(6)))*(sp.WinPercentage-0.5))), 2)-0.5 AS DECIMAL(10,9))
-		)
-		,ms.MaxScoreValue = (1 - sp.T1)*CAST((6*EXP(-(2*LOG(5+2*SQRT(6)))*(sp.WinPercentage-0.5)))/POWER((1+EXP(-(2*LOG(5+2*SQRT(6)))*(sp.WinPercentage-0.5))), 2)-0.5 AS DECIMAL(10,9))
+	-- Step 1: Assign evaluation group IDs once, outside the main join
+	-- Instead of 5 LEFT JOINs on ranges, use a hash (cross) join
+	INSERT INTO #MoveEvalGroups
+	SELECT
+		m.GameID
+		,m.MoveNumber
+		,m.ColorID
+		,ISNULL(MAX(CASE WHEN m.T1_Eval_POV >= eg.LBound AND m.T1_Eval_POV <= eg.UBound THEN eg.EvaluationGroupID END), 0) AS EG1_ID
+		,ISNULL(MAX(CASE WHEN m.T2_Eval_POV >= eg.LBound AND m.T2_Eval_POV <= eg.UBound THEN eg.EvaluationGroupID END), 0) AS EG2_ID
+		,ISNULL(MAX(CASE WHEN m.T3_Eval_POV >= eg.LBound AND m.T3_Eval_POV <= eg.UBound THEN eg.EvaluationGroupID END), 0) AS EG3_ID
+		,ISNULL(MAX(CASE WHEN m.T4_Eval_POV >= eg.LBound AND m.T4_Eval_POV <= eg.UBound THEN eg.EvaluationGroupID END), 0) AS EG4_ID
+		,ISNULL(MAX(CASE WHEN m.T5_Eval_POV >= eg.LBound AND m.T5_Eval_POV <= eg.UBound THEN eg.EvaluationGroupID END), 0) AS EG5_ID
+
+	FROM lake.Moves AS m WITH (INDEX(IDX_LMoves_MoveScored))
+	CROSS JOIN dim.EvaluationGroups AS eg
+
+	WHERE m.MoveScored = 1
+
+	GROUP BY m.GameID, m.MoveNumber, m.ColorID
+
+	--use statistics to improve cardinality estimates
+	CREATE STATISTICS stat_MoveEvalGroups_Cardinality 
+	ON #MoveEvalGroups (GameID)
+
+	UPDATE STATISTICS #MoveEvalGroups
+
+	-- Step 2: Materialize the normalized data into another temp table
+	CREATE TABLE #NormalizedData (
+		GameID INT NOT NULL
+		,MoveNumber SMALLINT NOT NULL
+		,ColorID TINYINT NOT NULL
+		,Move_Rank TINYINT NULL
+		,ScACPL DECIMAL(5,2) NULL
+		,LookupSourceID TINYINT NULL
+		,LookupTimeControlID TINYINT NULL
+		,LookupRatingID SMALLINT NULL
+		,EG1_ID TINYINT NULL
+		,EG2_ID TINYINT NULL
+		,EG3_ID TINYINT NULL
+		,EG4_ID TINYINT NULL
+		,EG5_ID TINYINT NULL
+		,PRIMARY KEY (GameID, MoveNumber, ColorID)
+	)
+
+	INSERT INTO #NormalizedData
+	SELECT
+		ms.GameID
+		,ms.MoveNumber
+		,ms.ColorID
+		,m.Move_Rank
+		,m.ScACPL
+		,CAST((CASE g.SourceID WHEN 1 THEN 3 WHEN 2 THEN 4 ELSE g.SourceID END) AS TINYINT)
+		,CAST((CASE WHEN g.SourceID = 1 THEN 5 ELSE td.TimeControlID END) AS TINYINT)
+		,CAST((CASE WHEN g.SourceID = 2 AND r.RatingID < 2200 THEN 2200 ELSE r.RatingID END) AS SMALLINT)
+		,mev.EG1_ID
+		,mev.EG2_ID
+		,mev.EG3_ID
+		,mev.EG4_ID
+		,mev.EG5_ID
 
 	FROM stat.MoveScores AS ms
+	INNER JOIN #MoveEvalGroups AS mev ON ms.GameID = mev.GameID
+		AND ms.MoveNumber = mev.MoveNumber
+		AND ms.ColorID = mev.ColorID
 	INNER JOIN lake.Moves AS m ON ms.GameID = m.GameID
 		AND ms.MoveNumber = m.MoveNumber
 		AND ms.ColorID = m.ColorID
@@ -40,27 +102,48 @@ BEGIN
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
 	INNER JOIN dim.Ratings AS r ON (CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) >= r.RatingID
 		AND (CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) <= r.RatingUpperBound
-	LEFT JOIN FileHistory AS fh ON g.FileID = fh.FileID
-	INNER JOIN dim.EvaluationGroups AS eg1 ON m.T1_Eval_POV >= eg1.LBound
-		AND m.T1_Eval_POV <= eg1.UBound
-	LEFT JOIN dim.EvaluationGroups AS eg2 ON m.T2_Eval_POV >= eg2.LBound
-		AND m.T2_Eval_POV <= eg2.UBound
-	LEFT JOIN dim.EvaluationGroups AS eg3 ON m.T3_Eval_POV >= eg3.LBound
-		AND m.T3_Eval_POV <= eg3.UBound
-	LEFT JOIN dim.EvaluationGroups AS eg4 ON m.T4_Eval_POV >= eg4.LBound
-		AND m.T4_Eval_POV <= eg4.UBound
-	LEFT JOIN dim.EvaluationGroups AS eg5 ON m.T5_Eval_POV >= eg5.LBound
-		AND m.T5_Eval_POV <= eg5.UBound
-	LEFT JOIN fact.EvaluationSplits AS sp ON (CASE g.SourceID WHEN 1 THEN 3 WHEN 2 THEN 4 ELSE g.SourceID END) = sp.SourceID
-		AND (CASE WHEN g.SourceID = 1 THEN 5 ELSE td.TimeControlID END) = sp.TimeControlID
-		AND (CASE WHEN g.SourceID = 2 AND r.RatingID < 2200 THEN 2200 ELSE r.RatingID END) = sp.RatingID
-		AND eg1.EvaluationGroupID = sp.EvaluationGroupID_T1
-		AND ISNULL(eg2.EvaluationGroupID, 0) = sp.EvaluationGroupID_T2
-		AND ISNULL(eg3.EvaluationGroupID, 0) = sp.EvaluationGroupID_T3
-		AND ISNULL(eg4.EvaluationGroupID, 0) = sp.EvaluationGroupID_T4
-		AND ISNULL(eg5.EvaluationGroupID, 0) = sp.EvaluationGroupID_T5
+	INNER JOIN FileHistory AS fh ON g.FileID = fh.FileID
 
-	WHERE m.MoveScored = 1
-	AND (fh.FileID = @FileID OR ISNULL(@FileID, -1) = -1)
-	AND ms.ScoreID = 3
+	WHERE ms.ScoreID = 3
+	AND (fh.FileID = @FileID OR @FileID IS NULL)
+
+	OPTION (RECOMPILE)  --to avoid parameter sniffing issues
+
+	UPDATE STATISTICS #NormalizedData
+
+	-- Step 3: Now run the UPDATE against the known cardinalities
+	UPDATE ms
+	SET ms.ScoreValue = (
+			(1 - (
+			CASE nd.Move_Rank 
+				WHEN 1 THEN sp.T1
+				WHEN 2 THEN sp.T2
+				WHEN 3 THEN sp.T3
+				WHEN 4 THEN sp.T4
+				WHEN 5 THEN sp.T5
+				ELSE (CASE WHEN sp.T1 IS NULL THEN NULL 
+					WHEN (sp.ScACPL IS NULL OR ISNULL(sp.ScSDCPL, 0) = 0) THEN 1 
+					ELSE (sp.T5 + ((1-sp.T5)/(1+EXP(-((nd.ScACPL-sp.ScACPL)/sp.ScSDCPL))))) 
+				END)
+			END)) * sp.ScalingFactor
+		)
+		,ms.MaxScoreValue = (1 - sp.T1) * sp.ScalingFactor
+
+	FROM stat.MoveScores AS ms
+	INNER JOIN #NormalizedData AS nd ON ms.GameID = nd.GameID
+		AND ms.MoveNumber = nd.MoveNumber
+		AND ms.ColorID = nd.ColorID
+	INNER JOIN fact.EvaluationSplits AS sp ON nd.LookupSourceID = sp.SourceID
+		AND nd.LookupTimeControlID = sp.TimeControlID
+		AND nd.LookupRatingID = sp.RatingID
+		AND nd.EG1_ID = sp.EvaluationGroupID_T1
+		AND nd.EG2_ID = sp.EvaluationGroupID_T2
+		AND nd.EG3_ID = sp.EvaluationGroupID_T3
+		AND nd.EG4_ID = sp.EvaluationGroupID_T4
+		AND nd.EG5_ID = sp.EvaluationGroupID_T5
+
+	OPTION (RECOMPILE)
+
+	DROP TABLE IF EXISTS #NormalizedData
+	DROP TABLE IF EXISTS #MoveEvalGroups
 END

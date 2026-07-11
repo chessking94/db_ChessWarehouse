@@ -24,6 +24,6 @@ BEGIN
 	LEFT JOIN FileHistory AS fh ON g.FileID = fh.FileID
 
 	WHERE m.MoveScored = 1
-	AND (fh.FileID = @FileID OR ISNULL(@FileID, -1) = -1)
+	AND (fh.FileID = @FileID OR @FileID IS NULL)
 	AND ms.ScoreID = 0
 END
