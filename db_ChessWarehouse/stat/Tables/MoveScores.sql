@@ -9,3 +9,6 @@
 	,CONSTRAINT [FK_MoveScores_MoveID] FOREIGN KEY ([GameID], [MoveNumber], [ColorID]) REFERENCES [lake].[Moves] ([GameID], [MoveNumber], [ColorID]) ON DELETE CASCADE
 	,CONSTRAINT [FK_MoveScores_ScoreID] FOREIGN KEY ([ScoreID]) REFERENCES [dim].[Scores] ([ScoreID]) ON DELETE CASCADE
 )
+
+GO
+CREATE NONCLUSTERED INDEX [IDX_MoveScores_ScoreValueUpdates] ON [stat].[MoveScores] ([ScoreID], [GameID], [MoveNumber], [ColorID]) INCLUDE ([ScoreValue], [MaxScoreValue]);
