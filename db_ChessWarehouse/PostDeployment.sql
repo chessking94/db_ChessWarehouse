@@ -805,7 +805,7 @@ FROM
     VALUES
         (0, 'TestScore', 'This score is used for testing purposes', 0),
         (1, 'WinProbabilityLost', 'A measurement of the change in win probability based on the evaluation and individual game source/time control', 1),
-        (2, 'WinProbabilityLostEqual', 'A measurement of the change in win probability based on the evaluation and a predefined game source/time control', 1),
+        (2, 'WinProbabilityLostEqual', 'A measurement of the change in win probability based on the evaluation and a predefined game source/time control', 0),
         (3, 'EvaluationGroupComparison', 'A measurement of the historical difficulty in playing similar positions based on the T5 evaluations and individual game source/time control/ratings', 1)
 ) AS v (ScoreID, ScoreName, ScoreDesc, ScoreActive)
 WHERE NOT EXISTS (SELECT 1 FROM dim.Scores AS a WHERE a.ScoreID = v.ScoreID)
