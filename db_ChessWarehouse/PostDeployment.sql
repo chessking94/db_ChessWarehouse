@@ -1002,7 +1002,8 @@ FROM
 (
     VALUES
         (1, 'Normal'),
-        (2, 'Gamma')
+        (2, 'Gamma'),
+        (3, 'Logistic')
 ) AS v (DistributionID, DistributionType)
 WHERE NOT EXISTS (SELECT 1 FROM stat.DistributionTypes AS a WHERE a.DistributionID = v.DistributionID)
 

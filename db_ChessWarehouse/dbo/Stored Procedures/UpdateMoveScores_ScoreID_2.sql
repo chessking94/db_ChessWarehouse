@@ -24,11 +24,11 @@ BEGIN
 	INNER JOIN FileHistory AS fh ON g.FileID = fh.FileID
 	INNER JOIN dim.TimeControlDetail AS td ON g.TimeControlDetailID = td.TimeControlDetailID
 	LEFT JOIN stat.EvalDistributions AS t1 ON m.T1_Eval_POV = t1.Evaluation
-		AND t1.DistributionID = 1
+		AND t1.DistributionID = 3
 	LEFT JOIN stat.EvalDistributions AS mp ON t1.SourceID = mp.SourceID
 		AND t1.TimeControlID = mp.TimeControlID
 		AND m.Move_Eval_POV = mp.Evaluation
-		AND mp.DistributionID = 1
+		AND mp.DistributionID = 3
 
 	WHERE m.MoveScored = 1
 	AND t1.SourceID = dbo.GetSettingValue('WinProbabilityLostEqual Source')

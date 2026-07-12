@@ -32,11 +32,11 @@ BEGIN
 	LEFT JOIN stat.EvalDistributions AS t1 ON g.SourceID = t1.SourceID
 		AND td.TimeControlID = t1.TimeControlID
 		AND m.T1_Eval_POV = t1.Evaluation
-		AND t1.DistributionID = 1
+		AND t1.DistributionID = 3
 	LEFT JOIN stat.EvalDistributions AS mp ON g.SourceID = mp.SourceID
 		AND td.TimeControlID = mp.TimeControlID
 		AND m.Move_Eval_POV = mp.Evaluation
-		AND mp.DistributionID = 1
+		AND mp.DistributionID = 3
 
 	WHERE m.MoveScored = 1
 	AND (fh.FileID = @FileID OR @FileID IS NULL)
