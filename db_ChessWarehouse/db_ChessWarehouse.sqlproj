@@ -104,7 +104,7 @@
     <Build Include="dim\Tables\EvaluationGroups.sql" />
     <Build Include="stage\Tables\Games.sql" />
     <Build Include="dbo\Tables\FileTypes.sql" />
-    <Build Include="fact\Tables\EvaluationSplits.sql" />
+    <Build Include="fact\Tables\EvaluationSplitsRating.sql" />
     <Build Include="dim\Tables\Ratings.sql" />
     <Build Include="dim\Tables\Sources.sql" />
     <Build Include="stage\Tables\Moves.sql" />
@@ -160,7 +160,7 @@
     <Build Include="dbo\Stored Procedures\UpdateEventFacts.sql" />
     <Build Include="dbo\Stored Procedures\UpdateEvaluationFacts.sql" />
     <Build Include="dbo\Stored Procedures\UpdateMoveScoresAll.sql" />
-    <Build Include="dbo\Stored Procedures\InsertEvaluationSplits.sql" />
+    <Build Include="dbo\Stored Procedures\InsertEvaluationSplitsRating.sql" />
     <Build Include="dbo\Stored Procedures\UpdateTimeControlIDsAll.sql" />
     <Build Include="dbo\Stored Procedures\UpdateGameData.sql" />
     <Build Include="dbo\Stored Procedures\StageGames.sql" />

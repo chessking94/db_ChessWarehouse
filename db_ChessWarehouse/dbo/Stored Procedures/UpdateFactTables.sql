@@ -15,7 +15,7 @@ BEGIN
 	IF @piFileID IS NULL
 	BEGIN
 		EXEC dbo.InsertEvaluationFacts
-		EXEC dbo.InsertEvaluationSplits
+		EXEC dbo.InsertEvaluationSplitsRating
 		EXEC dbo.UpdateEvaluationFacts
 	END
 END

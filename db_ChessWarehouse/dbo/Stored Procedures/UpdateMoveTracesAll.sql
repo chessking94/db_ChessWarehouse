@@ -54,7 +54,7 @@ BEGIN
 	EXEC dbo.InsertEventFacts
 	EXEC dbo.InsertGameFacts
 	EXEC dbo.InsertEvaluationFacts
-	EXEC dbo.InsertEvaluationSplits
+	EXEC dbo.InsertEvaluationSplitsRating
 
 	--recalculate z-scores
 	EXEC dbo.UpdateEventFacts

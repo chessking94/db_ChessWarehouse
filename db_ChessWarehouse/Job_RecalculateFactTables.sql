@@ -86,7 +86,7 @@ BEGIN
 
 		EXEC @ReturnCode = msdb.dbo.sp_add_jobstep
 			@job_id = @jobId,
-			@step_name = N'EvaluationSplits',
+			@step_name = N'EvaluationSplitsRating',
 			@step_id = 4,
 			@cmdexec_success_code = 0,
 			@on_success_action = 1,
@@ -97,7 +97,7 @@ BEGIN
 			@retry_interval = 0,
 			@os_run_priority = 0,
 			@subsystem = N'TSQL',
-			@command = N'EXEC dbo.InsertEvaluationSplits',
+			@command = N'EXEC dbo.InsertEvaluationSplitsRating',
 			@database_name = N'ChessWarehouse',
 			@flags = 0
 		IF (@@ERROR <> 0 OR @ReturnCode <> 0) GOTO QuitWithRollback

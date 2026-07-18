@@ -1,11 +1,11 @@
-﻿CREATE PROCEDURE [dbo].[InsertEvaluationSplits]
+﻿CREATE PROCEDURE [dbo].[InsertEvaluationSplitsRating]
 
 AS
 
 BEGIN
-	TRUNCATE TABLE fact.EvaluationSplits
+	TRUNCATE TABLE fact.EvaluationSplitsRating
 
-	INSERT INTO fact.EvaluationSplits (
+	INSERT INTO fact.EvaluationSplitsRating (
 		SourceID
 		,TimeControlID
 		,RatingID
@@ -46,11 +46,6 @@ BEGIN
 		,AVG(CASE WHEN m.Move_Rank <= 3 THEN 1.00 ELSE 0.00 END) AS T3
 		,AVG(CASE WHEN m.Move_Rank <= 4 THEN 1.00 ELSE 0.00 END) AS T4
 		,AVG(CASE WHEN m.Move_Rank <= 5 THEN 1.00 ELSE 0.00 END) AS T5
-		--,AVG(e1.CDF - e1.CDF) AS T1_WinProbLost
-		--,AVG(e1.CDF - ISNULL(e2.CDF, e1.CDF)) AS T2_WinProbLost
-		--,AVG(e1.CDF - ISNULL(e3.CDF, e1.CDF)) AS T3_WinProbLost
-		--,AVG(e1.CDF - ISNULL(e4.CDF, e1.CDF)) AS T4_WinProbLost
-		--,AVG(e1.CDF - ISNULL(e5.CDF, e1.CDF)) AS T5_WinProbLost
 		,AVG(CASE WHEN m.ColorID = 1 THEN g.Result ELSE (CASE g.Result WHEN 1 THEN 0 WHEN 0 THEN 1 ELSE 0.5 END) END) AS WinPcnt
 
 	FROM lake.Moves AS m
@@ -70,21 +65,6 @@ BEGIN
 		AND m.T4_Eval_POV <= eg4.UBound
 	LEFT JOIN dim.EvaluationGroups AS eg5 ON m.T5_Eval_POV >= eg5.LBound
 		AND m.T5_Eval_POV <= eg5.UBound
-	--INNER JOIN stat.EvalDistributions AS e1 ON g.SourceID = e1.SourceID
-	--	AND td.TimeControlID = e1.TimeControlID
-	--	AND m.T1_Eval_POV = e1.Evaluation
-	--LEFT JOIN stat.EvalDistributions AS e2 ON g.SourceID = e2.SourceID
-	--	AND td.TimeControlID = e2.TimeControlID
-	--	AND m.T2_Eval_POV = e2.Evaluation
-	--LEFT JOIN stat.EvalDistributions AS e3 ON g.SourceID = e3.SourceID
-	--	AND td.TimeControlID = e3.TimeControlID
-	--	AND m.T3_Eval_POV = e3.Evaluation
-	--LEFT JOIN stat.EvalDistributions AS e4 ON g.SourceID = e4.SourceID
-	--	AND td.TimeControlID = e4.TimeControlID
-	--	AND m.T4_Eval_POV = e4.Evaluation
-	--LEFT JOIN stat.EvalDistributions AS e5 ON g.SourceID = e5.SourceID
-	--	AND td.TimeControlID = e5.TimeControlID
-	--	AND m.T5_Eval_POV = e5.Evaluation
 
 	WHERE g.SourceID IN (3, 4)
 	AND (CASE WHEN c.Color = 'White' THEN g.WhiteBerserk ELSE g.BlackBerserk END) = 0

@@ -7,7 +7,7 @@ AS
 /*
 	*** Score Name = EvaluationGroupComparison ***
 	This score compares the difficulty of playing similarly evaluated positions (per T5) by the source/time control/rating.
-	The more difficult the position is to play (per the T1-T5 percentages logged in fact.EvaluationSplits), the greater the move score can be.
+	The more difficult the position is to play (per the T1-T5 percentages logged in fact.EvaluationSplitsRating), the greater the move score can be.
 		A benefit of this method is that positions with multiple similarly evaluated top moves will assumed to be more likely to be played, and thus
 		less difficult to find and be allocated less importance.
 	After subtracting the probability of playing one of the top 5 moves (depending on if T1-T5 is played) from 1, the result is then scaled by a messy function.
@@ -36,9 +36,9 @@ BEGIN
 
 	INSERT INTO #NormalizedData
 	SELECT
-		ms.GameID
-		,ms.MoveNumber
-		,ms.ColorID
+		m.GameID
+		,m.MoveNumber
+		,m.ColorID
 		,m.Move_Rank
 		,m.ScACPL
 		,CAST((CASE g.SourceID WHEN 1 THEN 3 WHEN 2 THEN 4 ELSE g.SourceID END) AS TINYINT)
@@ -50,19 +50,13 @@ BEGIN
 		,m.T4_EvaluationGroupID
 		,m.T5_EvaluationGroupID
 
-	FROM stat.MoveScores AS ms
-	INNER JOIN lake.Moves AS m ON ms.GameID = m.GameID
-		AND ms.MoveNumber = m.MoveNumber
-		AND ms.ColorID = m.ColorID
+	FROM lake.Moves AS m
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
+		AND (g.FileID = @FileID OR @FileID IS NULL)
 	INNER JOIN dim.TimeControlDetail AS td ON g.TimeControlDetailID = td.TimeControlDetailID
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
 	INNER JOIN dim.Ratings AS r ON (CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) >= r.RatingID
 		AND (CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) <= r.RatingUpperBound
-	INNER JOIN FileHistory AS fh ON g.FileID = fh.FileID
-
-	WHERE ms.ScoreID = 3
-	AND (fh.FileID = @FileID OR @FileID IS NULL)
 
 	OPTION (RECOMPILE)  --to avoid parameter sniffing issues
 
@@ -90,7 +84,7 @@ BEGIN
 	INNER JOIN #NormalizedData AS nd ON ms.GameID = nd.GameID
 		AND ms.MoveNumber = nd.MoveNumber
 		AND ms.ColorID = nd.ColorID
-	INNER JOIN fact.EvaluationSplits AS sp ON nd.LookupSourceID = sp.SourceID
+	INNER JOIN fact.EvaluationSplitsRating AS sp ON nd.LookupSourceID = sp.SourceID
 		AND nd.LookupTimeControlID = sp.TimeControlID
 		AND nd.LookupRatingID = sp.RatingID
 		AND nd.T1_EvaluationGroupID = sp.EvaluationGroupID_T1
