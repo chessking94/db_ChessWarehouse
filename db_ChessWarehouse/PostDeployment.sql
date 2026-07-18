@@ -721,7 +721,8 @@ FROM
         (8, 'WinProbabilityLost', 1),
         (9, 'ScACPL', -1),
         (10, 'ScSDCPL', -1),
-        (11, 'EvaluationGroupComparison', 1)
+        (11, 'EvaluationGroupComparison', 1),
+        (12, 'ContextualMoveQuality', 1)
 ) AS v (MeasurementID, MeasurementName, ZScore_Multiplier)
 WHERE NOT EXISTS (SELECT 1 FROM dim.Measurements AS a WHERE a.MeasurementID = v.MeasurementID)
 

@@ -112,7 +112,7 @@ BEGIN
 		,g.GameID
 		,m.ColorID
 		,ms.ScoreID
-		,100*SUM(CASE WHEN (m.MoveScored = 0 OR ms.MaxScoreValue = 0) THEN NULL ELSE ms.ScoreValue END)/SUM(CASE WHEN (m.MoveScored = 0 OR ms.MaxScoreValue = 0) THEN NULL ELSE ms.MaxScoreValue END) AS Score
+		,100*SUM(CASE WHEN (m.MoveScored = 0 OR ISNULL(ms.MaxScoreValue, 0) = 0) THEN NULL ELSE ms.ScoreValue END)/SUM(CASE WHEN (m.MoveScored = 0 OR ISNULL(ms.MaxScoreValue, 0) = 0) THEN NULL ELSE ms.MaxScoreValue END) AS Score	
 
 	FROM lake.Moves AS m
 	INNER JOIN stat.MoveScores AS ms ON m.GameID = ms.GameID
@@ -120,7 +120,7 @@ BEGIN
 		AND m.ColorID = ms.ColorID
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
 
-	WHERE (ISNULL(@FileID, -1) = -1 OR g.GameID IN (SELECT GameID FROM #Games))
+	WHERE (@FileID IS NULL OR g.GameID IN (SELECT GameID FROM #Games))
 
 	GROUP BY
 		g.SourceID

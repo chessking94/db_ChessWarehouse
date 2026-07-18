@@ -35,12 +35,12 @@ BEGIN
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
 		AND (g.FileID = @FileID OR @FileID IS NULL)  --ability to calculate a subset of games or the entire database
 	INNER JOIN dim.TimeControlDetail AS td ON g.TimeControlDetailID = td.TimeControlDetailID
-	LEFT JOIN stat.EvalDistributions AS t1 ON g.SourceID = t1.SourceID  --if there is no record in t1, a null score is expected
-		AND td.TimeControlID = t1.TimeControlID
+	LEFT JOIN stat.EvalDistributions AS t1 ON (CASE g.SourceID WHEN 1 THEN 3 WHEN 2 THEN 4 ELSE g.SourceID END) = t1.SourceID  --if there is no record in t1, a null score is expected
+		AND (CASE WHEN g.SourceID = 1 THEN 5 ELSE td.TimeControlID END) = t1.TimeControlID
 		AND m.T1_Eval_POV = t1.Evaluation
 		AND t1.DistributionID = 3
-	LEFT JOIN stat.EvalDistributions AS mp ON g.SourceID = mp.SourceID  --null handling is required for mp above, in case of a terrible blunder
-		AND td.TimeControlID = mp.TimeControlID
+	LEFT JOIN stat.EvalDistributions AS mp ON (CASE g.SourceID WHEN 1 THEN 3 WHEN 2 THEN 4 ELSE g.SourceID END) = mp.SourceID  --null handling is required for mp above, in case of a terrible blunder
+		AND (CASE WHEN g.SourceID = 1 THEN 5 ELSE td.TimeControlID END) = mp.TimeControlID
 		AND m.Move_Eval_POV = mp.Evaluation
 		AND mp.DistributionID = 3
 

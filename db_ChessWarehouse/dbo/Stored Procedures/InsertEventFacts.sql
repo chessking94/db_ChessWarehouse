@@ -115,7 +115,7 @@ BEGIN
 		,td.TimeControlID
 		,CASE WHEN c.Color = 'White' THEN g.WhitePlayerID ELSE g.BlackPlayerID END AS PlayerID
 		,ms.ScoreID
-		,100*SUM(CASE WHEN (m.MoveScored = 0 OR ms.MaxScoreValue = 0) THEN NULL ELSE ms.ScoreValue END)/SUM(CASE WHEN (m.MoveScored = 0 OR ms.MaxScoreValue = 0) THEN NULL ELSE ms.MaxScoreValue END) AS Score
+		,100*SUM(CASE WHEN (m.MoveScored = 0 OR ISNULL(ms.MaxScoreValue, 0) = 0) THEN NULL ELSE ms.ScoreValue END)/SUM(CASE WHEN (m.MoveScored = 0 OR ISNULL(ms.MaxScoreValue, 0) = 0) THEN NULL ELSE ms.MaxScoreValue END) AS Score
 
 	FROM lake.Moves AS m
 	INNER JOIN stat.MoveScores AS ms ON m.GameID = ms.GameID
@@ -126,7 +126,7 @@ BEGIN
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
 
 	WHERE g.SourceID NOT IN (2, 4)
-	AND (ISNULL(@FileID, -1) = -1 OR g.EventID IN (SELECT EventID FROM #Events))
+	AND (@FileID IS NULL OR g.EventID IN (SELECT EventID FROM #Events))
 
 	GROUP BY
 		g.EventID

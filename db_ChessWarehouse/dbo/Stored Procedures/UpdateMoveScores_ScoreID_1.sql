@@ -26,21 +26,20 @@ BEGIN
 	INNER JOIN lake.Moves AS m ON ms.GameID = m.GameID
 		AND ms.MoveNumber = m.MoveNumber
 		AND ms.ColorID = m.ColorID
+		AND m.MoveScored = 1
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
-	INNER JOIN FileHistory AS fh ON g.FileID = fh.FileID
+		AND (g.FileID = @FileID OR @FileID IS NULL)
 	INNER JOIN dim.TimeControlDetail AS td ON g.TimeControlDetailID = td.TimeControlDetailID
-	LEFT JOIN stat.EvalDistributions AS t1 ON g.SourceID = t1.SourceID
-		AND td.TimeControlID = t1.TimeControlID
+	LEFT JOIN stat.EvalDistributions AS t1 ON (CASE g.SourceID WHEN 1 THEN 3 WHEN 2 THEN 4 ELSE g.SourceID END) = t1.SourceID
+		AND (CASE g.SourceID WHEN 1 THEN 5 ELSE td.TimeControlID END) = t1.TimeControlID
 		AND m.T1_Eval_POV = t1.Evaluation
 		AND t1.DistributionID = 3
-	LEFT JOIN stat.EvalDistributions AS mp ON g.SourceID = mp.SourceID
-		AND td.TimeControlID = mp.TimeControlID
+	LEFT JOIN stat.EvalDistributions AS mp ON (CASE g.SourceID WHEN 1 THEN 3 WHEN 2 THEN 4 ELSE g.SourceID END) = mp.SourceID
+		AND (CASE g.SourceID WHEN 1 THEN 5 ELSE td.TimeControlID END) = mp.TimeControlID
 		AND m.Move_Eval_POV = mp.Evaluation
 		AND mp.DistributionID = 3
 
-	WHERE m.MoveScored = 1
-	AND (fh.FileID = @FileID OR @FileID IS NULL)
-	AND ms.ScoreID = 1
+	WHERE ms.ScoreID = 1
 
 	OPTION (RECOMPILE)
 END

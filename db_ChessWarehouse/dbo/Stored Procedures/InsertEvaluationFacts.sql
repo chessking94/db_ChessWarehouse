@@ -94,7 +94,7 @@ BEGIN
 		,td.TimeControlID
 		,r.RatingID
 		,ms.ScoreID
-		,100*SUM(CASE WHEN (m.MoveScored = 0 OR ms.MaxScoreValue = 0) THEN NULL ELSE ms.ScoreValue END)/SUM(CASE WHEN (m.MoveScored = 0 OR ms.MaxScoreValue = 0) THEN NULL ELSE ms.MaxScoreValue END) AS Score
+		,100*SUM(CASE WHEN (m.MoveScored = 0 OR ISNULL(ms.MaxScoreValue, 0) = 0) THEN NULL ELSE ms.ScoreValue END)/SUM(CASE WHEN (m.MoveScored = 0 OR ISNULL(ms.MaxScoreValue, 0) = 0) THEN NULL ELSE ms.MaxScoreValue END) AS Score
 
 	FROM lake.Moves AS m
 	INNER JOIN stat.MoveScores AS ms ON m.GameID = ms.GameID
