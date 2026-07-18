@@ -49,6 +49,7 @@
 	,[T3_EvaluationGroupID] TINYINT NULL
 	,[T4_EvaluationGroupID] TINYINT NULL
 	,[T5_EvaluationGroupID] TINYINT NULL
+	,[Complexity] DECIMAL(10,9) NULL
 	,CONSTRAINT [PK_LMoves] PRIMARY KEY CLUSTERED ([GameID] ASC, [MoveNumber] ASC, [ColorID] ASC)
 	,CONSTRAINT [FK_LMoves_ColorID] FOREIGN KEY ([ColorID]) REFERENCES [dim].[Colors] ([ColorID])
 	,CONSTRAINT [FK_LMoves_EngineID] FOREIGN KEY ([EngineID]) REFERENCES [dim].[Engines] ([EngineID])
