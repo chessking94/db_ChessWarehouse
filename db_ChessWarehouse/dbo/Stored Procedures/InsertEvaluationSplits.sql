@@ -35,10 +35,10 @@ BEGIN
 		,m.T4_EvaluationGroupID
 		,m.T5_EvaluationGroupID
 		,COUNT(m.MoveNumber) AS MovesAnalyzed
-		,AVG(CASE when m.CP_Loss = 0 THEN NULL ELSE m.CP_Loss END) AS ACPL
-		,STDEV(CASE when m.CP_Loss = 0 THEN NULL ELSE m.CP_Loss END) AS SDCPL
-		,AVG(CASE when m.ScACPL = 0 THEN NULL ELSE m.ScACPL END) AS ScACPL
-		,STDEV(CASE when m.ScACPL = 0 THEN NULL ELSE m.ScACPL END) AS ScSDCPL
+		,AVG(m.CP_Loss) AS ACPL
+		,STDEV(m.CP_Loss) AS SDCPL
+		,AVG(m.ScACPL) AS ScACPL
+		,STDEV(m.ScACPL) AS ScSDCPL
 		,AVG(CASE WHEN m.Move_Rank <= 1 THEN 1.00 ELSE 0.00 END) AS T1
 		,AVG(CASE WHEN m.Move_Rank <= 2 THEN 1.00 ELSE 0.00 END) AS T2
 		,AVG(CASE WHEN m.Move_Rank <= 3 THEN 1.00 ELSE 0.00 END) AS T3

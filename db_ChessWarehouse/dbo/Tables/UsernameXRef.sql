@@ -6,6 +6,7 @@
 	,[Source] VARCHAR(15) NULL
 	,[SelfFlag] BIT NULL
 	,[DownloadFlag] BIT NULL
+	,[LastUpdated] DATETIME NULL
 	,[LastActiveOnline] DATETIME NULL
 	,[UserStatus] VARCHAR(10) NULL
 	,[BulletRating] INT NULL
@@ -20,6 +21,7 @@
 	,[TotalGames] AS (ISNULL([BulletGames], 0) + ISNULL([BlitzGames], 0) + ISNULL([RapidGames], 0) + ISNULL([DailyGames], 0))
 	,CONSTRAINT [PK_UsernameXRef] PRIMARY KEY CLUSTERED ([PlayerID] ASC)
 	,CONSTRAINT [CK_UsernameXRef_UserStatus] CHECK ([UserStatus] = 'DNE' OR [UserStatus] = 'Closed' OR [UserStatus] = 'Open')
+	,CONSTRAINT [UC_UsernameXRef_UsernameSource] UNIQUE NONCLUSTERED ([Username] ASC, [Source] ASC)
 );
 
 GO
