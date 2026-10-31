@@ -58,6 +58,8 @@ BEGIN
 	INNER JOIN dim.Ratings AS r ON (CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) >= r.RatingID
 		AND (CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) <= r.RatingUpperBound
 
+	WHERE m.MoveScored = 1
+
 	OPTION (RECOMPILE)  --to avoid parameter sniffing issues
 
 	UPDATE STATISTICS #NormalizedData
@@ -92,6 +94,8 @@ BEGIN
 		AND nd.T3_EvaluationGroupID = sp.EvaluationGroupID_T3
 		AND nd.T4_EvaluationGroupID = sp.EvaluationGroupID_T4
 		AND nd.T5_EvaluationGroupID = sp.EvaluationGroupID_T5
+
+	WHERE ms.ScoreID = 3
 
 	OPTION (RECOMPILE)
 
