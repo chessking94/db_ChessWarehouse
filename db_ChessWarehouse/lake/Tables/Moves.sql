@@ -34,16 +34,16 @@
 	,[T10_Eval] VARCHAR(7) NULL
 	,[Move_Rank] TINYINT NULL
 	,[CP_Loss] DECIMAL(5,2) NULL
-	,[ScACPL] AS (CASE WHEN [CP_Loss] IS NULL OR LEFT([T1_Eval], 1) = '#' THEN NULL ELSE CONVERT(DECIMAL(5,2), [CP_Loss])/(1 + ABS(CONVERT(DECIMAL(5,2), [T1_Eval]))) END) PERSISTED
+	,[ScACPL] AS (case when [CP_Loss] IS NULL OR left([T1_Eval],(1))='#' then NULL else CONVERT([decimal](5,2),[CP_Loss])/((1)+abs(CONVERT([decimal](5,2),[T1_Eval]))) end) PERSISTED
 	,[MoveScored] BIT CONSTRAINT [DF_LMoves_MoveScored] DEFAULT (0) NOT NULL
 	,[TraceKey] CHAR(1) COLLATE Latin1_General_CS_AS NULL  --this needs to be case-sensitive!
 	,[MovesAnalyzed] TINYINT NULL
-	,[Move_Eval_POV] AS (CASE WHEN [Move_Eval] LIKE '#%' THEN NULL ELSE CAST(CONVERT(DECIMAL(5,2), [Move_Eval])*ISNULL(NULLIF(CONVERT(SMALLINT, [ColorID]), 2), -1) AS DECIMAL(5,2)) END) PERSISTED
-	,[T1_Eval_POV] AS (CASE WHEN [T1_Eval] LIKE '#%' THEN NULL ELSE CAST(CONVERT(DECIMAL(5,2), [T1_Eval])*ISNULL(NULLIF(CONVERT(SMALLINT, [ColorID]), 2), -1) AS DECIMAL(5,2)) END) PERSISTED
-	,[T2_Eval_POV] AS (CASE WHEN [T2_Eval] LIKE '#%' THEN NULL ELSE CAST(CONVERT(DECIMAL(5,2), [T2_Eval])*ISNULL(NULLIF(CONVERT(SMALLINT, [ColorID]), 2), -1) AS DECIMAL(5,2)) END) PERSISTED
-	,[T3_Eval_POV] AS (CASE WHEN [T3_Eval] LIKE '#%' THEN NULL ELSE CAST(CONVERT(DECIMAL(5,2), [T3_Eval])*ISNULL(NULLIF(CONVERT(SMALLINT, [ColorID]), 2), -1) AS DECIMAL(5,2)) END) PERSISTED
-	,[T4_Eval_POV] AS (CASE WHEN [T4_Eval] LIKE '#%' THEN NULL ELSE CAST(CONVERT(DECIMAL(5,2), [T4_Eval])*ISNULL(NULLIF(CONVERT(SMALLINT, [ColorID]), 2), -1) AS DECIMAL(5,2)) END) PERSISTED
-	,[T5_Eval_POV] AS (CASE WHEN [T5_Eval] LIKE '#%' THEN NULL ELSE CAST(CONVERT(DECIMAL(5,2), [T5_Eval])*ISNULL(NULLIF(CONVERT(SMALLINT, [ColorID]), 2), -1) AS DECIMAL(5,2)) END) PERSISTED
+	,[Move_Eval_POV] AS (case when [Move_Eval] like '#%' then NULL else CONVERT([decimal](5,2),CONVERT([decimal](5,2),[Move_Eval])*isnull(nullif(CONVERT([smallint],[ColorID]),(2)),(-1))) end) PERSISTED
+	,[T1_Eval_POV] AS (case when [T1_Eval] like '#%' then NULL else CONVERT([decimal](5,2),CONVERT([decimal](5,2),[T1_Eval])*isnull(nullif(CONVERT([smallint],[ColorID]),(2)),(-1))) end) PERSISTED
+	,[T2_Eval_POV] AS (case when [T2_Eval] like '#%' then NULL else CONVERT([decimal](5,2),CONVERT([decimal](5,2),[T2_Eval])*isnull(nullif(CONVERT([smallint],[ColorID]),(2)),(-1))) end) PERSISTED
+	,[T3_Eval_POV] AS (case when [T3_Eval] like '#%' then NULL else CONVERT([decimal](5,2),CONVERT([decimal](5,2),[T3_Eval])*isnull(nullif(CONVERT([smallint],[ColorID]),(2)),(-1))) end) PERSISTED
+	,[T4_Eval_POV] AS (case when [T4_Eval] like '#%' then NULL else CONVERT([decimal](5,2),CONVERT([decimal](5,2),[T4_Eval])*isnull(nullif(CONVERT([smallint],[ColorID]),(2)),(-1))) end) PERSISTED
+	,[T5_Eval_POV] AS (case when [T5_Eval] like '#%' then NULL else CONVERT([decimal](5,2),CONVERT([decimal](5,2),[T5_Eval])*isnull(nullif(CONVERT([smallint],[ColorID]),(2)),(-1))) end) PERSISTED
 	,[T1_EvaluationGroupID] TINYINT NULL
 	,[T2_EvaluationGroupID] TINYINT NULL
 	,[T3_EvaluationGroupID] TINYINT NULL
