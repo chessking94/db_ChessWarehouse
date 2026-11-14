@@ -43,7 +43,7 @@ LEFT JOIN (
 	INNER JOIN stat.MoveScores AS ms ON m.GameID = ms.GameID
 		AND m.ColorID = ms.ColorID
 		AND m.MoveNumber = ms.MoveNumber
-		AND ms.ScoreID = 1
+		AND ms.ScoreID = dbo.GetSettingValue('Default Score')
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
 	INNER JOIN dim.Sources AS s ON g.SourceID = s.SourceID
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
@@ -75,7 +75,7 @@ LEFT JOIN (
 	INNER JOIN stat.MoveScores AS ms ON m.GameID = ms.GameID
 		AND m.ColorID = ms.ColorID
 		AND m.MoveNumber = ms.MoveNumber
-		AND ms.ScoreID = 1
+		AND ms.ScoreID = dbo.GetSettingValue('Default Score')
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
 	INNER JOIN dim.Sources AS s ON g.SourceID = s.SourceID
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
@@ -155,7 +155,7 @@ LEFT JOIN (
 	INNER JOIN stat.MoveScores AS ms ON m.GameID = ms.GameID
 		AND m.ColorID = ms.ColorID
 		AND m.MoveNumber = ms.MoveNumber
-		AND ms.ScoreID = 1
+		AND ms.ScoreID = dbo.GetSettingValue('Default Score')
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
 	INNER JOIN dim.Sources AS s ON g.SourceID = s.SourceID
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
@@ -187,7 +187,7 @@ LEFT JOIN (
 	INNER JOIN stat.MoveScores AS ms ON m.GameID = ms.GameID
 		AND m.ColorID = ms.ColorID
 		AND m.MoveNumber = ms.MoveNumber
-		AND ms.ScoreID = 1
+		AND ms.ScoreID = dbo.GetSettingValue('Default Score')
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
 	INNER JOIN dim.Sources AS s ON g.SourceID = s.SourceID
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
@@ -268,7 +268,7 @@ LEFT JOIN (
 	INNER JOIN stat.MoveScores AS ms ON m.GameID = ms.GameID
 		AND m.ColorID = ms.ColorID
 		AND m.MoveNumber = ms.MoveNumber
-		AND ms.ScoreID = 1
+		AND ms.ScoreID = dbo.GetSettingValue('Default Score')
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
 	INNER JOIN dim.Sources AS s ON g.SourceID = s.SourceID
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
@@ -299,7 +299,7 @@ LEFT JOIN (
 	INNER JOIN stat.MoveScores AS ms ON m.GameID = ms.GameID
 		AND m.ColorID = ms.ColorID
 		AND m.MoveNumber = ms.MoveNumber
-		AND ms.ScoreID = 1
+		AND ms.ScoreID = dbo.GetSettingValue('Default Score')
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
 	INNER JOIN dim.Sources AS s ON g.SourceID = s.SourceID
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
