@@ -57,7 +57,7 @@ BEGIN
 		,g.SourceID
 		,td.TimeControlID
 		,CASE WHEN c.Color = 'White' THEN g.WhitePlayerID ELSE g.BlackPlayerID END AS PlayerID
-		,r.RatingID
+		,CASE WHEN c.Color = 'White' THEN g.WhiteRatingID ELSE g.BlackRatingID END AS RatingID
 		,COUNT(DISTINCT g.GameID) AS GameCount
 		,SUM(CASE WHEN m.CP_Loss IS NOT NULL THEN 1 ELSE 0 END) AS CPL_Moves
 		,SUM(CASE WHEN cp.CPLossGroupID = 1 THEN 1 ELSE 0 END) AS CPL_1
@@ -83,8 +83,6 @@ BEGIN
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
 	INNER JOIN dim.TimeControlDetail AS td ON g.TimeControlDetailID = td.TimeControlDetailID
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
-	INNER JOIN dim.Ratings AS r ON (CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) >= r.RatingID
-		AND (CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) <= r.RatingUpperBound
 	LEFT JOIN dim.CPLossGroups AS cp ON m.CP_Loss >= cp.LBound
 		AND m.CP_Loss <= cp.UBound
 
@@ -96,7 +94,7 @@ BEGIN
 		,g.SourceID
 		,td.TimeControlID
 		,CASE WHEN c.Color = 'White' THEN g.WhitePlayerID ELSE g.BlackPlayerID END
-		,r.RatingID
+		,CASE WHEN c.Color = 'White' THEN g.WhiteRatingID ELSE g.BlackRatingID END
 
 
 	--fact.EventScores

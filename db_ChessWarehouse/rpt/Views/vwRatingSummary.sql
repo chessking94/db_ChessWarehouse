@@ -5,7 +5,7 @@ AS
 SELECT
 	s.SourceName
 	,'White' AS MyColor
-	,br.RatingID
+	,g.BlackRatingID AS RatingID
 	,SUM(CASE WHEN g.Result = 1 THEN 1 ELSE 0 END) AS Wins
 	,SUM(CASE WHEN g.Result = 0 THEN 1 ELSE 0 END) AS Losses
 	,SUM(CASE WHEN g.Result = 0.5 THEN 1 ELSE 0 END) AS Draws
@@ -25,12 +25,10 @@ SELECT
 FROM lake.Games AS g
 INNER JOIN dim.Sources AS s ON g.SourceID = s.SourceID
 INNER JOIN dim.Players AS p ON g.WhitePlayerID = p.PlayerID
-INNER JOIN dim.Ratings AS br ON g.BlackElo >= br.RatingID
-	AND g.BlackElo <= br.RatingUpperBound
 LEFT JOIN (
 	SELECT
 		s.SourceID
-		,br.RatingID
+		,g.BlackRatingID AS RatingID
 		,COUNT(m.MoveNumber) AS MovesAnalyzed
 		,AVG(m.CP_Loss) AS Me_ACPL
 		,ISNULL(STDEV(m.CP_Loss), 0) AS Me_SDCPL
@@ -44,8 +42,6 @@ LEFT JOIN (
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
 	INNER JOIN dim.Sources AS s ON g.SourceID = s.SourceID
 	INNER JOIN dim.Players AS p ON g.WhitePlayerID = p.PlayerID
-	INNER JOIN dim.Ratings AS br ON g.BlackElo >= br.RatingID
-		AND g.BlackElo <= br.RatingUpperBound
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
 
 	WHERE p.SelfFlag = 1
@@ -54,13 +50,13 @@ LEFT JOIN (
 
 	GROUP BY
 		s.SourceID
-		,br.RatingID
+		,g.BlackRatingID
 ) me ON s.SourceID = me.SourceID
-	AND br.RatingID = me.RatingID
+	AND g.BlackRatingID = me.RatingID
 LEFT JOIN (
 	SELECT
 		s.SourceID
-		,br.RatingID
+		,g.BlackRatingID AS RatingID
 		,COUNT(m.MoveNumber) AS MovesAnalyzed
 		,AVG(m.CP_Loss) AS Opp_ACPL
 		,ISNULL(STDEV(m.CP_Loss), 0) AS Opp_SDCPL
@@ -74,8 +70,6 @@ LEFT JOIN (
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
 	INNER JOIN dim.Sources AS s ON g.SourceID = s.SourceID
 	INNER JOIN dim.Players AS p ON g.WhitePlayerID = p.PlayerID
-	INNER JOIN dim.Ratings AS br ON g.BlackElo >= br.RatingID
-		AND g.BlackElo <= br.RatingUpperBound
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
 
 	WHERE p.SelfFlag = 1
@@ -84,15 +78,15 @@ LEFT JOIN (
 
 	GROUP BY
 		s.SourceID
-		,br.RatingID
+		,g.BlackRatingID
 ) opp ON s.SourceID = opp.SourceID
-	AND br.RatingID = opp.RatingID
+	AND g.BlackRatingID = opp.RatingID
 
 WHERE p.SelfFlag = 1
 
 GROUP BY
 	s.SourceName
-	,br.RatingID
+	,g.BlackRatingID
 	,me.MovesAnalyzed
 	,opp.MovesAnalyzed
 	,me.Me_ACPL
@@ -109,7 +103,7 @@ UNION
 SELECT
 	s.SourceName
 	,'Black' AS MyColor
-	,wr.RatingID
+	,g.WhiteRatingID AS RatingID
 	,SUM(CASE WHEN g.Result = 0 THEN 1 ELSE 0 END) AS Wins
 	,SUM(CASE WHEN g.Result = 1 THEN 1 ELSE 0 END) AS Losses
 	,SUM(CASE WHEN g.Result = 0.5 THEN 1 ELSE 0 END) AS Draws
@@ -129,28 +123,24 @@ SELECT
 FROM lake.Games AS g
 INNER JOIN dim.Sources AS s ON g.SourceID = s.SourceID
 INNER JOIN dim.Players AS p ON g.BlackPlayerID = p.PlayerID
-INNER JOIN dim.Ratings AS wr ON g.WhiteElo >= wr.RatingID
-	AND g.WhiteElo <= wr.RatingUpperBound
 LEFT JOIN (
 	SELECT
 		s.SourceID
-		,wr.RatingID
+		,g.WhiteRatingID AS RatingID
 		,COUNT(m.MoveNumber) AS MovesAnalyzed
 		,AVG(m.CP_Loss) AS Me_ACPL
 		,ISNULL(STDEV(m.CP_Loss), 0) AS Me_SDCPL
 		,100*SUM(ms.ScoreValue)/SUM(ms.MaxScoreValue) AS Me_Score
 
 	FROM lake.Moves AS m
-	JOIN stat.MoveScores AS ms ON m.GameID = ms.GameID
+	INNER JOIN stat.MoveScores AS ms ON m.GameID = ms.GameID
 		AND m.ColorID = ms.ColorID
 		AND m.MoveNumber = ms.MoveNumber
 		AND ms.ScoreID = dbo.GetSettingValue('Default Score')
-	JOIN lake.Games AS g ON m.GameID = g.GameID
-	JOIN dim.Sources AS s ON g.SourceID = s.SourceID
-	JOIN dim.Players AS p ON g.BlackPlayerID = p.PlayerID
-	JOIN dim.Ratings AS wr ON g.WhiteElo >= wr.RatingID
-		AND g.WhiteElo <= wr.RatingUpperBound
-	JOIN dim.Colors AS c ON m.ColorID = c.ColorID
+	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
+	INNER JOIN dim.Sources AS s ON g.SourceID = s.SourceID
+	INNER JOIN dim.Players AS p ON g.BlackPlayerID = p.PlayerID
+	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
 
 	WHERE p.SelfFlag = 1
 	AND c.Color = 'Black'
@@ -158,13 +148,13 @@ LEFT JOIN (
 
 	GROUP BY
 		s.SourceID
-		,wr.RatingID
+		,g.WhiteRatingID
 ) me ON s.SourceID = me.SourceID
-	AND wr.RatingID = me.RatingID
+	AND g.WhiteRatingID = me.RatingID
 LEFT JOIN (
 	SELECT
 		s.SourceID
-		,wr.RatingID
+		,g.WhiteRatingID AS RatingID
 		,COUNT(m.MoveNumber) AS MovesAnalyzed
 		,AVG(m.CP_Loss) AS Opp_ACPL
 		,ISNULL(STDEV(m.CP_Loss), 0) AS Opp_SDCPL
@@ -178,8 +168,6 @@ LEFT JOIN (
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
 	INNER JOIN dim.Sources AS s ON g.SourceID = s.SourceID
 	INNER JOIN dim.Players AS p ON g.BlackPlayerID = p.PlayerID
-	INNER JOIN dim.Ratings AS wr ON g.WhiteElo >= wr.RatingID
-		AND g.WhiteElo <= wr.RatingUpperBound
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
 
 	WHERE p.SelfFlag = 1
@@ -188,15 +176,15 @@ LEFT JOIN (
 
 	GROUP BY
 		s.SourceID
-		,wr.RatingID
+		,g.WhiteRatingID
 ) opp ON s.SourceID = opp.SourceID
-	AND wr.RatingID = opp.RatingID
+	AND g.WhiteRatingID = opp.RatingID
 
 WHERE p.SelfFlag = 1
 
 GROUP BY
 	s.SourceName
-	,wr.RatingID
+	,g.WhiteRatingID
 	,me.MovesAnalyzed
 	,opp.MovesAnalyzed
 	,me.Me_ACPL
@@ -213,7 +201,7 @@ UNION
 SELECT
 	s.SourceName
 	,'All' AS MyColor
-	,CASE WHEN wp.SelfFlag = 1 THEN br.RatingID ELSE wr.RatingID END AS RatingID
+	,CASE WHEN wp.SelfFlag = 1 THEN g.BlackRatingID ELSE g.WhiteRatingID END AS RatingID
 	,SUM(CASE WHEN (wp.SelfFlag = 1 AND g.Result = 1) OR (bp.SelfFlag = 1 AND g.Result = 0) THEN 1 ELSE 0 END) AS Wins
 	,SUM(CASE WHEN (wp.SelfFlag = 1 AND g.Result = 0) OR (bp.SelfFlag = 1 AND g.Result = 1) THEN 1 ELSE 0 END) AS Losses
 	,SUM(CASE WHEN g.Result = 0.5 THEN 1 ELSE 0 END) AS Draws
@@ -234,14 +222,10 @@ FROM lake.Games AS g
 INNER JOIN dim.Sources AS s ON g.SourceID = s.SourceID
 INNER JOIN dim.Players AS wp ON g.WhitePlayerID = wp.PlayerID
 INNER JOIN dim.Players AS bp ON g.BlackPlayerID = bp.PlayerID
-INNER JOIN dim.Ratings AS wr ON g.WhiteElo >= wr.RatingID
-	AND g.WhiteElo <= wr.RatingUpperBound
-INNER JOIN dim.Ratings AS br ON g.BlackElo >= br.RatingID
-	AND g.BlackElo <= br.RatingUpperBound
 LEFT JOIN (
 	SELECT
 		s.SourceID
-		,CASE WHEN c.Color = 'White' THEN br.RatingID ELSE wr.RatingID END AS RatingID
+		,CASE WHEN c.Color = 'White' THEN g.BlackRatingID ELSE g.WhiteRatingID END AS RatingID
 		,COUNT(m.MoveNumber) AS MovesAnalyzed
 		,AVG(m.CP_Loss) AS Me_ACPL
 		,ISNULL(STDEV(m.CP_Loss), 0) AS Me_SDCPL
@@ -256,23 +240,19 @@ LEFT JOIN (
 	INNER JOIN dim.Sources AS s ON g.SourceID = s.SourceID
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
 	INNER JOIN dim.Players AS p ON (CASE WHEN c.Color = 'White' THEN g.WhitePlayerID ELSE g.BlackPlayerID END) = p.PlayerID
-	INNER JOIN dim.Ratings AS wr ON g.WhiteElo >= wr.RatingID
-		AND g.WhiteElo <= wr.RatingUpperBound
-	INNER JOIN dim.Ratings AS br ON g.BlackElo >= br.RatingID
-		AND g.BlackElo <= br.RatingUpperBound
 
 	WHERE p.SelfFlag = 1
 	AND m.MoveScored = 1
 
 	GROUP BY
 		s.SourceID
-		,CASE WHEN c.Color = 'White' THEN br.RatingID ELSE wr.RatingID END
+		,CASE WHEN c.Color = 'White' THEN g.BlackRatingID ELSE g.WhiteRatingID END
 ) me ON s.SourceID = me.SourceID
-	AND (CASE WHEN wp.SelfFlag = 1 THEN br.RatingID ELSE wr.RatingID END) = me.RatingID
+	AND (CASE WHEN wp.SelfFlag = 1 THEN g.BlackRatingID ELSE g.WhiteRatingID END) = me.RatingID
 LEFT JOIN (
 	SELECT
 		s.SourceID
-		,CASE WHEN c.Color = 'White' THEN wr.RatingID ELSE br.RatingID END AS RatingID
+		,CASE WHEN c.Color = 'White' THEN g.WhiteRatingID ELSE g.BlackRatingID END AS RatingID
 		,COUNT(m.MoveNumber) AS MovesAnalyzed
 		,AVG(m.CP_Loss) AS Opp_ACPL
 		,ISNULL(STDEV(m.CP_Loss), 0) AS Opp_SDCPL
@@ -287,26 +267,22 @@ LEFT JOIN (
 	INNER JOIN dim.Sources AS s ON g.SourceID = s.SourceID
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
 	INNER JOIN dim.Players AS p ON (CASE WHEN c.Color = 'White' THEN g.WhitePlayerID ELSE g.BlackPlayerID END) = p.PlayerID
-	INNER JOIN dim.Ratings AS wr ON g.WhiteElo >= wr.RatingID
-		AND g.WhiteElo <= wr.RatingUpperBound
-	INNER JOIN dim.Ratings AS br ON g.BlackElo >= br.RatingID
-		AND	g.BlackElo <= br.RatingUpperBound
 
 	WHERE p.SelfFlag <> 1
 	AND m.MoveScored = 1
 
 	GROUP BY
 		s.SourceID
-		,CASE WHEN c.Color = 'White' THEN wr.RatingID ELSE br.RatingID END
+		,CASE WHEN c.Color = 'White' THEN g.WhiteRatingID ELSE g.BlackRatingID END
 ) opp ON s.SourceID = opp.SourceID
-	AND (CASE WHEN wp.SelfFlag = 1 THEN br.RatingID ELSE wr.RatingID END) = opp.RatingID
+	AND (CASE WHEN wp.SelfFlag = 1 THEN g.BlackRatingID ELSE g.WhiteRatingID END) = opp.RatingID
 
 WHERE wp.SelfFlag = 1
 OR bp.SelfFlag = 1
 
 GROUP BY
 	s.SourceName
-	,CASE WHEN wp.SelfFlag = 1 THEN br.RatingID ELSE wr.RatingID END
+	,CASE WHEN wp.SelfFlag = 1 THEN g.BlackRatingID ELSE g.WhiteRatingID END
 	,me.MovesAnalyzed
 	,opp.MovesAnalyzed
 	,me.Me_ACPL

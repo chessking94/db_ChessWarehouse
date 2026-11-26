@@ -34,9 +34,9 @@ BEGIN
 
 	SELECT
 		g.SourceID
-		,e.EvaluationGroupID
+		,m.T1_EvaluationGroupID AS EvaluationGroupID
 		,td.TimeControlID
-		,r.RatingID
+		,CASE WHEN c.Color = 'White' THEN g.WhiteRatingID ELSE g.BlackRatingID END AS RatingID
 		,SUM(CASE WHEN m.CP_Loss IS NOT NULL THEN 1 ELSE 0 END) AS CPL_Moves
 		,SUM(CASE WHEN cp.CPLossGroupID = 1 THEN 1 ELSE 0 END) AS CPL_1
 		,SUM(CASE WHEN cp.CPLossGroupID = 2 THEN 1 ELSE 0 END) AS CPL_2
@@ -61,10 +61,6 @@ BEGIN
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
 	INNER JOIN dim.TimeControlDetail AS td ON g.TimeControlDetailID = td.TimeControlDetailID
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
-	INNER JOIN dim.Ratings AS r ON (CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) >= r.RatingID
-		AND (CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) <= r.RatingUpperBound
-	INNER JOIN dim.EvaluationGroups AS e ON m.T1_Eval_POV >= e.LBound
-		AND m.T1_Eval_POV <= e.UBound
 	LEFT JOIN dim.CPLossGroups AS cp ON m.CP_Loss >= cp.LBound
 		AND m.CP_Loss <= cp.UBound
 
@@ -73,9 +69,9 @@ BEGIN
 
 	GROUP BY
 		g.SourceID
-		,e.EvaluationGroupID
+		,m.T1_EvaluationGroupID
 		,td.TimeControlID
-		,r.RatingID
+		,CASE WHEN c.Color = 'White' THEN g.WhiteRatingID ELSE g.BlackRatingID END
 
 
 	--fact.EvaluationScores
@@ -90,9 +86,9 @@ BEGIN
 
 	SELECT
 		g.SourceID
-		,e.EvaluationGroupID
+		,m.T1_EvaluationGroupID AS EvaluationGroupID
 		,td.TimeControlID
-		,r.RatingID
+		,CASE WHEN c.Color = 'White' THEN g.WhiteRatingID ELSE g.BlackRatingID END AS RatingID
 		,ms.ScoreID
 		,100*SUM(CASE WHEN (m.MoveScored = 0 OR ISNULL(ms.MaxScoreValue, 0) = 0) THEN NULL ELSE ms.ScoreValue END)/SUM(CASE WHEN (m.MoveScored = 0 OR ISNULL(ms.MaxScoreValue, 0) = 0) THEN NULL ELSE ms.MaxScoreValue END) AS Score
 
@@ -103,18 +99,14 @@ BEGIN
 	INNER JOIN lake.Games AS g ON m.GameID = g.GameID
 	INNER JOIN dim.TimeControlDetail AS td ON g.TimeControlDetailID = td.TimeControlDetailID
 	INNER JOIN dim.Colors AS c ON m.ColorID = c.ColorID
-	INNER JOIN dim.Ratings AS r ON (CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) >= r.RatingID
-		AND (CASE WHEN c.Color = 'White' THEN g.WhiteElo ELSE g.BlackElo END) <= r.RatingUpperBound
-	INNER JOIN dim.EvaluationGroups AS e ON m.T1_Eval_POV >= e.LBound
-		AND m.T1_Eval_POV <= e.UBound
 
 	WHERE g.SourceID IN (3, 4)
 	AND (CASE WHEN c.Color = 'White' THEN g.WhiteBerserk ELSE g.BlackBerserk END) = 0
 
 	GROUP BY
 		g.SourceID
-		,e.EvaluationGroupID
+		,m.T1_EvaluationGroupID
 		,td.TimeControlID
-		,r.RatingID
+		,CASE WHEN c.Color = 'White' THEN g.WhiteRatingID ELSE g.BlackRatingID END
 		,ms.ScoreID
 END

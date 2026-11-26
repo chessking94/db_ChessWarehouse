@@ -39,4 +39,27 @@ BEGIN
 	AND td.Seconds IS NOT NULL
 	AND m.Clock*2 <= td.Seconds
 	AND g.FileID = @fileid
+
+
+	--WhiteRatingID
+	UPDATE g
+
+	SET g.WhiteRatingID = r.RatingID
+
+	FROM lake.Games AS g
+	INNER JOIN dim.Ratings AS r ON g.WhiteElo >= r.RatingID
+		AND g.WhiteElo <= r.RatingUpperBound
+
+	WHERE g.FileID = @fileid
+
+	--BlackRatingID
+	UPDATE g
+
+	SET g.BlackRatingID = r.RatingID
+
+	FROM lake.Games AS g
+	INNER JOIN dim.Ratings AS r ON g.BlackElo >= r.RatingID
+		AND g.BlackElo <= r.RatingUpperBound
+
+	WHERE g.FileID = @fileid
 END

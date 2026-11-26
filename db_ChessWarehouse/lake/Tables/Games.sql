@@ -7,7 +7,9 @@
 	,[WhitePlayerID] INT NOT NULL
 	,[BlackPlayerID] INT NOT NULL
 	,[WhiteElo] SMALLINT NULL
+	,[WhiteRatingID] SMALLINT NULL
 	,[BlackElo] SMALLINT NULL
+	,[BlackRatingID] SMALLINT NULL
 	,[TimeControlDetailID] SMALLINT NOT NULL
 	,[ECOID] SMALLINT NOT NULL
 	,[GameDate] DATE NOT NULL
